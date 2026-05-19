@@ -19,9 +19,17 @@ const AdminDashboard: React.FC = () => {
     checkAuth();
   }, []);
 
+  const ADMIN_EMAIL = 'ayuda.corazonviajero@gmail.com';
+
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
+      navigate('/login');
+      return;
+    }
+    // Solo permitir acceso al admin autorizado
+    if (session.user.email !== ADMIN_EMAIL) {
+      await supabase.auth.signOut();
       navigate('/login');
       return;
     }
