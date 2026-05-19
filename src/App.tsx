@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import WhatsAppFloat from './components/common/WhatsAppFloat';
@@ -14,29 +14,38 @@ import BlogPage from './pages/BlogPage';
 import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 
+function AppContent() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname === '/admin' || location.pathname === '/login';
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      {!isAdminRoute && <Header />}
+      <main className="flex-grow">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/certificados" element={<CertificadosPage />} />
+          <Route path="/descuentos" element={<DescuentosPage />} />
+          <Route path="/visas" element={<VisasPage />} />
+          <Route path="/servicios" element={<ServiciosPage />} />
+          <Route path="/sub-brokers" element={<SubBrokersPage />} />
+          <Route path="/contacto" element={<ContactoPage />} />
+          <Route path="/nosotros" element={<NosotrosPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+        </Routes>
+      </main>
+      {!isAdminRoute && <Footer />}
+      {!isAdminRoute && <WhatsAppFloat />}
+    </div>
+  );
+}
+
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/certificados" element={<CertificadosPage />} />
-            <Route path="/descuentos" element={<DescuentosPage />} />
-            <Route path="/visas" element={<VisasPage />} />
-            <Route path="/servicios" element={<ServiciosPage />} />
-            <Route path="/sub-brokers" element={<SubBrokersPage />} />
-            <Route path="/contacto" element={<ContactoPage />} />
-            <Route path="/nosotros" element={<NosotrosPage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-          </Routes>
-        </main>
-        <Footer />
-        <WhatsAppFloat />
-      </div>
+      <AppContent />
     </Router>
   );
 }
