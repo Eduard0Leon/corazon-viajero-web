@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AuthProvider } from './lib/AuthContext';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import WhatsAppFloat from './components/common/WhatsAppFloat';
@@ -45,7 +46,9 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </Router>
   );
 }

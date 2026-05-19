@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../lib/AuthContext';
 
 const ContactoPage: React.FC = () => {
   const [formType, setFormType] = useState<'quote' | 'broker'>('quote');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const { user, profile, signInWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -92,6 +94,12 @@ const ContactoPage: React.FC = () => {
 
             {/* Dynamic Form */}
             <div className="lg:col-span-2">
+              {!user && (
+                <div className="mb-6 p-4 bg-teal/5 border border-teal/20 rounded-lg flex items-center justify-between">
+                  <p className="text-sm text-gray-600">Inicia sesión con Google para auto-rellenar tus datos</p>
+                  <button onClick={signInWithGoogle} className="bg-teal text-white px-4 py-2 rounded-md text-sm hover:bg-teal-dark transition-colors">Iniciar sesión</button>
+                </div>
+              )}
               {submitSuccess && (
                 <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-center">
                   ¡Gracias! Tu solicitud ha sido enviada correctamente. Nos pondremos en contacto contigo pronto.
@@ -104,11 +112,11 @@ const ContactoPage: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div>
                         <label htmlFor="name" className="block text-gray-700 text-sm font-medium mb-1">Nombre completo</label>
-                        <input type="text" id="name" name="name" required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal" placeholder="Tu nombre" />
+                        <input type="text" id="name" name="name" required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal" placeholder="Tu nombre" defaultValue={profile?.nombre || ''} />
                       </div>
                       <div>
                         <label htmlFor="email" className="block text-gray-700 text-sm font-medium mb-1">Correo electrónico</label>
-                        <input type="email" id="email" name="email" required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal" placeholder="tu@email.com" />
+                        <input type="email" id="email" name="email" required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal" placeholder="tu@email.com" defaultValue={user?.email || ''} />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
