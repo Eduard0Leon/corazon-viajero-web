@@ -9,7 +9,7 @@ const HomePage: React.FC = () => {
       <Services />
       
       {/* Featured Destinations Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-cream">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">Destinos Destacados</h2>
@@ -31,7 +31,7 @@ const HomePage: React.FC = () => {
               <div className="p-4">
                 <div className="flex justify-between items-center mb-2">
                   <div className="text-sm text-gray-500">4 noches / 5 días</div>
-                  <div className="text-lg font-bold text-blue-600">Desde $599 USD</div>
+                  <div className="text-lg font-bold text-teal">Desde $599 USD</div>
                 </div>
                 <div className="flex items-center text-sm text-gray-500 mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
@@ -51,7 +51,7 @@ const HomePage: React.FC = () => {
                   </svg>
                   <span className="ml-1">5.0 (120 reseñas)</span>
                 </div>
-                <a href="/certificados" className="block text-center bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-2 rounded-md hover:from-blue-700 hover:to-cyan-700 transition duration-300">
+                <a href="/certificados" className="block text-center bg-teal text-white py-2 rounded-md hover:bg-teal-dark transition duration-300">
                   Ver Oferta
                 </a>
               </div>
@@ -69,7 +69,7 @@ const HomePage: React.FC = () => {
               <div className="p-4">
                 <div className="flex justify-between items-center mb-2">
                   <div className="text-sm text-gray-500">3 noches / 4 días</div>
-                  <div className="text-lg font-bold text-blue-600">Desde $499 USD</div>
+                  <div className="text-lg font-bold text-teal">Desde $499 USD</div>
                 </div>
                 <div className="flex items-center text-sm text-gray-500 mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
@@ -89,7 +89,7 @@ const HomePage: React.FC = () => {
                   </svg>
                   <span className="ml-1">4.0 (85 reseñas)</span>
                 </div>
-                <a href="/certificados" className="block text-center bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-2 rounded-md hover:from-blue-700 hover:to-cyan-700 transition duration-300">
+                <a href="/certificados" className="block text-center bg-teal text-white py-2 rounded-md hover:bg-teal-dark transition duration-300">
                   Ver Oferta
                 </a>
               </div>
@@ -107,7 +107,7 @@ const HomePage: React.FC = () => {
               <div className="p-4">
                 <div className="flex justify-between items-center mb-2">
                   <div className="text-sm text-gray-500">5 noches / 6 días</div>
-                  <div className="text-lg font-bold text-blue-600">Desde $699 USD</div>
+                  <div className="text-lg font-bold text-teal">Desde $699 USD</div>
                 </div>
                 <div className="flex items-center text-sm text-gray-500 mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
@@ -127,7 +127,7 @@ const HomePage: React.FC = () => {
                   </svg>
                   <span className="ml-1">4.8 (150 reseñas)</span>
                 </div>
-                <a href="/servicios" className="block text-center bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-2 rounded-md hover:from-blue-700 hover:to-cyan-700 transition duration-300">
+                <a href="/servicios" className="block text-center bg-teal text-white py-2 rounded-md hover:bg-teal-dark transition duration-300">
                   Ver Oferta
                 </a>
               </div>
@@ -240,7 +240,7 @@ const HomePage: React.FC = () => {
       </section>
       
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
+      <section className="py-16 bg-navy text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">¿Listo para vivir una experiencia inolvidable?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
@@ -249,12 +249,12 @@ const HomePage: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a 
               onClick={() => window.open("https://wa.me/524424530648", "_blank")}
-              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-md font-semibold transition duration-300 cursor-pointer"
+              className="bg-white text-teal hover:bg-gray-100 px-8 py-3 rounded-md font-semibold transition duration-300 cursor-pointer"
             >
               Contactar ahora
             </a>
             <a 
-              href="https://wa.me/4424530648" 
+              href="https://wa.me/524424530648" 
               className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-md font-semibold transition duration-300 flex items-center justify-center"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">

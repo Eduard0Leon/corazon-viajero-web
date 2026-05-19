@@ -5,7 +5,7 @@ const BlogPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="relative bg-cover bg-center h-[300px]" style={{ backgroundImage: "url('/images/blog-hero.jpg')" }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/80 to-purple-800/70"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-navy/90 to-navy-light/80"></div>
         <div className="container mx-auto px-4 h-full flex items-center relative z-10">
           <div className="max-w-3xl text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Blog de Viajes</h1>
@@ -39,7 +39,7 @@ const BlogPage: React.FC = () => {
                     Descubre los destinos que ofrecen la mejor relación calidad-precio este año. Desde playas paradisíacas hasta ciudades culturales, estas opciones te permitirán viajar sin arruinar tu presupuesto.
                   </p>
                   <div className="flex items-center">
-                    <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm mr-3">
+                    <div className="h-10 w-10 rounded-full bg-teal/10 flex items-center justify-center text-teal font-bold text-sm mr-3">
                       EL
                     </div>
                     <div>
@@ -49,7 +49,7 @@ const BlogPage: React.FC = () => {
                   </div>
                   <a 
                     href="#" 
-                    className="mt-4 inline-flex items-center text-indigo-600 hover:text-indigo-800 transition duration-300"
+                    className="mt-4 inline-flex items-center text-teal hover:text-teal-dark transition duration-300"
                   >
                     Leer más
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -79,7 +79,7 @@ const BlogPage: React.FC = () => {
                     </p>
                     <a 
                       href="#" 
-                      className="inline-flex items-center text-indigo-600 hover:text-indigo-800 transition duration-300"
+                      className="inline-flex items-center text-teal hover:text-teal-dark transition duration-300"
                     >
                       Leer más
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -107,7 +107,7 @@ const BlogPage: React.FC = () => {
                     </p>
                     <a 
                       href="#" 
-                      className="inline-flex items-center text-indigo-600 hover:text-indigo-800 transition duration-300"
+                      className="inline-flex items-center text-teal hover:text-teal-dark transition duration-300"
                     >
                       Leer más
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -135,7 +135,7 @@ const BlogPage: React.FC = () => {
                     </p>
                     <a 
                       href="#" 
-                      className="inline-flex items-center text-indigo-600 hover:text-indigo-800 transition duration-300"
+                      className="inline-flex items-center text-teal hover:text-teal-dark transition duration-300"
                     >
                       Leer más
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -163,7 +163,7 @@ const BlogPage: React.FC = () => {
                     </p>
                     <a 
                       href="#" 
-                      className="inline-flex items-center text-indigo-600 hover:text-indigo-800 transition duration-300"
+                      className="inline-flex items-center text-teal hover:text-teal-dark transition duration-300"
                     >
                       Leer más
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -179,7 +179,7 @@ const BlogPage: React.FC = () => {
                 <nav className="flex items-center">
                   <a 
                     href="#" 
-                    className="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition duration-300"
+                    className="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-teal/10 hover:text-teal transition duration-300"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -187,32 +187,32 @@ const BlogPage: React.FC = () => {
                   </a>
                   <a 
                     href="#" 
-                    className="w-10 h-10 flex items-center justify-center rounded-md border border-indigo-600 bg-indigo-600 text-white mx-1"
+                    className="w-10 h-10 flex items-center justify-center rounded-md border border-teal bg-teal text-white mx-1"
                   >
                     1
                   </a>
                   <a 
                     href="#" 
-                    className="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition duration-300 mx-1"
+                    className="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-teal/10 hover:text-teal transition duration-300 mx-1"
                   >
                     2
                   </a>
                   <a 
                     href="#" 
-                    className="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition duration-300 mx-1"
+                    className="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-teal/10 hover:text-teal transition duration-300 mx-1"
                   >
                     3
                   </a>
                   <span className="mx-1 text-gray-600">...</span>
                   <a 
                     href="#" 
-                    className="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition duration-300 mx-1"
+                    className="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-teal/10 hover:text-teal transition duration-300 mx-1"
                   >
                     8
                   </a>
                   <a 
                     href="#" 
-                    className="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition duration-300"
+                    className="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-teal/10 hover:text-teal transition duration-300"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -231,7 +231,7 @@ const BlogPage: React.FC = () => {
                   <input 
                     type="text" 
                     placeholder="Buscar artículos..." 
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal pr-10"
                   />
                   <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -246,31 +246,31 @@ const BlogPage: React.FC = () => {
                 <h3 className="text-lg font-bold text-gray-800 mb-4">Categorías</h3>
                 <ul className="space-y-2">
                   <li>
-                    <a href="#" className="flex items-center justify-between text-gray-600 hover:text-indigo-600 transition duration-300">
+                    <a href="#" className="flex items-center justify-between text-gray-600 hover:text-teal transition duration-300">
                       <span>Destinos</span>
                       <span className="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">12</span>
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="flex items-center justify-between text-gray-600 hover:text-indigo-600 transition duration-300">
+                    <a href="#" className="flex items-center justify-between text-gray-600 hover:text-teal transition duration-300">
                       <span>Consejos</span>
                       <span className="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">8</span>
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="flex items-center justify-between text-gray-600 hover:text-indigo-600 transition duration-300">
+                    <a href="#" className="flex items-center justify-between text-gray-600 hover:text-teal transition duration-300">
                       <span>Ofertas</span>
                       <span className="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">5</span>
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="flex items-center justify-between text-gray-600 hover:text-indigo-600 transition duration-300">
+                    <a href="#" className="flex items-center justify-between text-gray-600 hover:text-teal transition duration-300">
                       <span>Visas</span>
                       <span className="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">4</span>
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="flex items-center justify-between text-gray-600 hover:text-indigo-600 transition duration-300">
+                    <a href="#" className="flex items-center justify-between text-gray-600 hover:text-teal transition duration-300">
                       <span>Sub-Brokers</span>
                       <span className="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">3</span>
                     </a>
@@ -285,21 +285,21 @@ const BlogPage: React.FC = () => {
                   <a href="#" className="flex items-start group">
                     <div className="h-16 w-16 bg-gray-200 rounded flex-shrink-0"></div>
                     <div className="ml-3">
-                      <h4 className="text-sm font-medium text-gray-800 group-hover:text-indigo-600 transition duration-300">Los 10 destinos más económicos para viajar en 2025</h4>
+                      <h4 className="text-sm font-medium text-gray-800 group-hover:text-teal transition duration-300">Los 10 destinos más económicos para viajar en 2025</h4>
                       <p className="text-xs text-gray-500 mt-1">15 de junio, 2025</p>
                     </div>
                   </a>
                   <a href="#" className="flex items-start group">
                     <div className="h-16 w-16 bg-gray-200 rounded flex-shrink-0"></div>
                     <div className="ml-3">
-                      <h4 className="text-sm font-medium text-gray-800 group-hover:text-indigo-600 transition duration-300">Cómo obtener tu visa de Estados Unidos sin complicaciones</h4>
+                      <h4 className="text-sm font-medium text-gray-800 group-hover:text-teal transition duration-300">Cómo obtener tu visa de Estados Unidos sin complicaciones</h4>
                       <p className="text-xs text-gray-500 mt-1">10 de junio, 2025</p>
                     </div>
                   </a>
                   <a href="#" className="flex items-start group">
                     <div className="h-16 w-16 bg-gray-200 rounded flex-shrink-0"></div>
                     <div className="ml-3">
-                      <h4 className="text-sm font-medium text-gray-800 group-hover:text-indigo-600 transition duration-300">Aprovecha al máximo los certificados de viaje</h4>
+                      <h4 className="text-sm font-medium text-gray-800 group-hover:text-teal transition duration-300">Aprovecha al máximo los certificados de viaje</h4>
                       <p className="text-xs text-gray-500 mt-1">5 de junio, 2025</p>
                     </div>
                   </a>
@@ -310,20 +310,20 @@ const BlogPage: React.FC = () => {
               <div className="bg-white rounded-lg shadow-md p-6 mb-8">
                 <h3 className="text-lg font-bold text-gray-800 mb-4">Etiquetas</h3>
                 <div className="flex flex-wrap gap-2">
-                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-indigo-100 hover:text-indigo-600 transition duration-300">Viajes</a>
-                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-indigo-100 hover:text-indigo-600 transition duration-300">Descuentos</a>
-                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-indigo-100 hover:text-indigo-600 transition duration-300">Hoteles</a>
-                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-indigo-100 hover:text-indigo-600 transition duration-300">Cruceros</a>
-                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-indigo-100 hover:text-indigo-600 transition duration-300">Visas</a>
-                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-indigo-100 hover:text-indigo-600 transition duration-300">Orlando</a>
-                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-indigo-100 hover:text-indigo-600 transition duration-300">Miami</a>
-                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-indigo-100 hover:text-indigo-600 transition duration-300">Consejos</a>
-                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-indigo-100 hover:text-indigo-600 transition duration-300">Sub-Brokers</a>
+                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-teal/10 hover:text-teal transition duration-300">Viajes</a>
+                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-teal/10 hover:text-teal transition duration-300">Descuentos</a>
+                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-teal/10 hover:text-teal transition duration-300">Hoteles</a>
+                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-teal/10 hover:text-teal transition duration-300">Cruceros</a>
+                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-teal/10 hover:text-teal transition duration-300">Visas</a>
+                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-teal/10 hover:text-teal transition duration-300">Orlando</a>
+                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-teal/10 hover:text-teal transition duration-300">Miami</a>
+                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-teal/10 hover:text-teal transition duration-300">Consejos</a>
+                  <a href="#" className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full hover:bg-teal/10 hover:text-teal transition duration-300">Sub-Brokers</a>
                 </div>
               </div>
               
               {/* Newsletter */}
-              <div className="bg-indigo-50 rounded-lg shadow-md p-6">
+              <div className="bg-teal/5 rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-bold text-gray-800 mb-2">Suscríbete a nuestro boletín</h3>
                 <p className="text-gray-600 text-sm mb-4">
                   Recibe las últimas ofertas y consejos de viaje directamente en tu bandeja de entrada.
@@ -333,12 +333,12 @@ const BlogPage: React.FC = () => {
                     <input 
                       type="email" 
                       placeholder="Tu correo electrónico" 
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal"
                     />
                   </div>
                   <button 
                     type="submit"
-                    className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300"
+                    className="w-full bg-teal text-white py-2 px-4 rounded-md hover:bg-teal-dark transition duration-300"
                   >
                     Suscribirse
                   </button>
@@ -350,7 +350,7 @@ const BlogPage: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+      <section className="py-16 bg-gradient-to-r from-navy to-navy-light text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">¿Listo para comenzar tu próxima aventura?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
@@ -359,12 +359,12 @@ const BlogPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a 
               href="/contacto" 
-              className="bg-white text-indigo-600 hover:bg-gray-100 px-8 py-3 rounded-md font-semibold transition duration-300"
+              className="bg-white text-teal hover:bg-gray-100 px-8 py-3 rounded-md font-semibold transition duration-300"
             >
               Contáctanos
             </a>
             <a 
-              href="https://wa.me/4424530648" 
+              href="https://wa.me/524424530648" 
               className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-md font-semibold transition duration-300 flex items-center justify-center"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
