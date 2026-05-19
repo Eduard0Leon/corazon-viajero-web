@@ -1,6 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
 
 const NosotrosPage: React.FC = () => {
+  const [aliados, setAliados] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchAliados = async () => {
+      const { data } = await supabase
+        .from('aliados')
+        .select('*')
+        .eq('activo', true)
+        .order('orden', { ascending: true });
+      if (data) setAliados(data);
+    };
+    fetchAliados();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -287,38 +302,43 @@ const NosotrosPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Partners */}
+          {/* Partners - Carrusel Dinámico */}
           <div>
             <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Nuestros Aliados</h2>
             
-            <div className="bg-white rounded-lg shadow-md p-8">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div className="h-20 flex items-center justify-center">
-                  <img src="/images/logo_aliado_aeromexico.png" alt="AeroMéxico Connect" className="h-16 object-contain" />
+            <div className="bg-white rounded-lg shadow-md p-8 overflow-hidden">
+              {aliados.length > 0 ? (
+                <div className="relative">
+                  <div className="flex animate-scroll gap-12 items-center">
+                    {[...aliados, ...aliados].map((aliado, index) => (
+                      <a
+                        key={`${aliado.id}-${index}`}
+                        href={aliado.website_url || '#'}
+                        target={aliado.website_url ? '_blank' : '_self'}
+                        rel="noopener noreferrer"
+                        className="flex-shrink-0 h-20 w-40 flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100"
+                      >
+                        <img src={aliado.logo_url} alt={aliado.nombre} className="max-h-16 max-w-full object-contain" />
+                      </a>
+                    ))}
+                  </div>
                 </div>
-                <div className="h-20 flex items-center justify-center">
-                  <img src="/images/logo_aliado_hoteles_premium.png" alt="Hoteles Premium México" className="h-16 object-contain" />
-                </div>
-                <div className="h-20 flex items-center justify-center">
-                  <img src="/images/logo_aliado_cruceros_caribe.png" alt="Cruceros del Caribe" className="h-16 object-contain" />
-                </div>
-                <div className="h-20 flex items-center justify-center">
-                  <img src="/images/logo_aliado_seguros_viaje.png" alt="Seguros Viaje Global" className="h-16 object-contain" />
-                </div>
-                <div className="h-20 flex items-center justify-center">
-                  <img src="/images/logo_aliado_tours_mexico.png" alt="Tours México Aventura" className="h-16 object-contain" />
-                </div>
-                <div className="h-20 flex items-center justify-center">
-                  <img src="/images/logo_aliado_rent_car.png" alt="RentCar Express" className="h-16 object-contain" />
-                </div>
-                <div className="h-20 flex items-center justify-center">
-                  <img src="/images/logo_aliado_spa_resorts.png" alt="Spa Resorts Riviera" className="h-16 object-contain" />
-                </div>
-                <div className="h-20 flex items-center justify-center">
-                  <img src="/images/logo_aliado_travel_bank.png" alt="TravelBank México" className="h-16 object-contain" />
-                </div>
-              </div>
+              ) : (
+                <p className="text-center text-gray-500">Próximamente mostraremos nuestros aliados estratégicos.</p>
+              )}
             </div>
+            <style>{`
+              @keyframes scroll {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+              }
+              .animate-scroll {
+                animation: scroll 20s linear infinite;
+              }
+              .animate-scroll:hover {
+                animation-play-state: paused;
+              }
+            `}</style>
           </div>
         </div>
       </section>
