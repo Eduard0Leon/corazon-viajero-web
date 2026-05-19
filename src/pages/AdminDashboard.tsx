@@ -22,9 +22,10 @@ interface Aliado {
 const AdminDashboard: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'aliados'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'aliados' | 'resenas'>('dashboard');
   const [stats, setStats] = useState<Stats>({ totalContacts: 0, totalSubscribers: 0, totalBlogPosts: 0, totalUsers: 0, recentContacts: [] });
   const [aliados, setAliados] = useState<Aliado[]>([]);
+  const [resenas, setResenas] = useState<any[]>([]);
   const [showAliadoForm, setShowAliadoForm] = useState(false);
   const [editingAliado, setEditingAliado] = useState<Aliado | null>(null);
   const [aliadoForm, setAliadoForm] = useState({ nombre: '', logo_url: '', website_url: '', orden: 0 });
@@ -50,6 +51,7 @@ const AdminDashboard: React.FC = () => {
     setUser(session.user);
     await loadStats();
     await loadAliados();
+    await loadResenas();
     setLoading(false);
   };
 
@@ -74,6 +76,23 @@ const AdminDashboard: React.FC = () => {
   const loadAliados = async () => {
     const { data } = await supabase.from('aliados').select('*').order('orden', { ascending: true });
     if (data) setAliados(data);
+  };
+
+  const loadResenas = async () => {
+    const { data } = await supabase.from('reviews').select('*').order('created_at', { ascending: false });
+    if (data) setResenas(data);
+  };
+
+  const handleToggleResena = async (id: string, aprobada: boolean) => {
+    await supabase.from('reviews').update({ aprobada: !aprobada }).eq('id', id);
+    await loadResenas();
+  };
+
+  const handleDeleteResena = async (id: string) => {
+    if (confirm('¿Eliminar esta reseña?')) {
+      await supabase.from('reviews').delete().eq('id', id);
+      await loadResenas();
+    }
   };
 
   const handleLogout = async () => {
@@ -167,6 +186,12 @@ const AdminDashboard: React.FC = () => {
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'aliados' ? 'border-teal text-teal' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
             >
               Aliados
+            </button>
+            <button 
+              onClick={() => setActiveTab('resenas')} 
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'resenas' ? 'border-teal text-teal' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+            >
+              Reseñas ({resenas.filter(r => !r.aprobada).length} pendientes)
             </button>
           </div>
         </div>
@@ -296,6 +321,39 @@ const AdminDashboard: React.FC = () => {
                       </button>
                       <button onClick={() => handleDeleteAliado(aliado.id)} className="text-xs px-2 py-1 bg-red-50 text-red-600 hover:bg-red-100 rounded transition-colors">Eliminar</button>
                     </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'resenas' && (
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <h2 className="text-xl font-bold text-navy mb-6">Gestión de Reseñas</h2>
+            {resenas.length === 0 ? (
+              <p className="text-gray-500 text-center py-8">No hay reseñas.</p>
+            ) : (
+              <div className="space-y-4">
+                {resenas.map((r) => (
+                  <div key={r.id} className={`border rounded-lg p-4 ${r.aprobada ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        {r.avatar_url ? <img src={r.avatar_url} className="w-10 h-10 rounded-full" /> : <div className="w-10 h-10 bg-teal rounded-full flex items-center justify-center text-white">{r.nombre[0]}</div>}
+                        <div>
+                          <p className="font-medium text-navy">{r.nombre}</p>
+                          <p className="text-gold">{'★'.repeat(r.calificacion)}{'☆'.repeat(5 - r.calificacion)}</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={() => handleToggleResena(r.id, r.aprobada)} className={`text-xs px-3 py-1 rounded ${r.aprobada ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>
+                          {r.aprobada ? 'Ocultar' : 'Aprobar'}
+                        </button>
+                        <button onClick={() => handleDeleteResena(r.id)} className="text-xs px-3 py-1 bg-red-100 text-red-600 rounded">Eliminar</button>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 mt-3">{r.comentario}</p>
+                    <p className="text-xs text-gray-400 mt-2">{new Date(r.created_at).toLocaleDateString('es-MX')}</p>
                   </div>
                 ))}
               </div>

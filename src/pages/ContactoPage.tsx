@@ -1,12 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/AuthContext';
+
+interface Review {
+  id: string;
+  nombre: string;
+  avatar_url: string;
+  calificacion: number;
+  comentario: string;
+  created_at: string;
+}
 
 const ContactoPage: React.FC = () => {
   const [formType, setFormType] = useState<'quote' | 'broker'>('quote');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const { user, profile, signInWithGoogle } = useAuth();
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewForm, setReviewForm] = useState({ calificacion: 5, comentario: '' });
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+
+  useEffect(() => {
+    loadReviews();
+  }, []);
+
+  const loadReviews = async () => {
+    const { data } = await supabase.from('reviews').select('*').eq('aprobada', true).order('created_at', { ascending: false }).limit(6);
+    if (data) setReviews(data);
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    await supabase.from('reviews').insert({
+      user_id: user.id,
+      nombre: profile?.nombre || user.email?.split('@')[0] || 'Usuario',
+      avatar_url: profile?.avatar_url || '',
+      calificacion: reviewForm.calificacion,
+      comentario: reviewForm.comentario
+    });
+    setReviewSubmitted(true);
+    setShowReviewForm(false);
+    setReviewForm({ calificacion: 5, comentario: '' });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -339,6 +376,70 @@ const ContactoPage: React.FC = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews Section */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">Lo que dicen nuestros clientes</h2>
+          <p className="text-gray-500 text-center mb-8">Experiencias reales de viajeros como tú</p>
+          
+          {reviews.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto mb-8">
+              {reviews.map((review) => (
+                <div key={review.id} className="bg-gray-50 rounded-lg p-5 border">
+                  <div className="flex items-center gap-3 mb-3">
+                    {review.avatar_url ? (
+                      <img src={review.avatar_url} alt="" className="w-10 h-10 rounded-full" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-teal flex items-center justify-center text-white font-bold">{review.nombre[0]}</div>
+                    )}
+                    <div>
+                      <p className="font-medium text-navy">{review.nombre}</p>
+                      <div className="flex text-gold">{'★'.repeat(review.calificacion)}{'☆'.repeat(5 - review.calificacion)}</div>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 text-sm">{review.comentario}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-500 mb-8">Sé el primero en dejar una reseña.</p>
+          )}
+
+          <div className="text-center">
+            {reviewSubmitted ? (
+              <p className="text-teal font-medium">¡Gracias! Tu reseña será revisada y publicada pronto.</p>
+            ) : user ? (
+              showReviewForm ? (
+                <form onSubmit={handleSubmitReview} className="max-w-md mx-auto bg-gray-50 p-6 rounded-lg">
+                  <div className="mb-4">
+                    <label className="block text-sm text-gray-600 mb-1">Calificación</label>
+                    <select value={reviewForm.calificacion} onChange={(e) => setReviewForm({ ...reviewForm, calificacion: parseInt(e.target.value) })} className="w-full px-3 py-2 border rounded-md">
+                      <option value={5}>★★★★★ Excelente</option>
+                      <option value={4}>★★★★☆ Muy bueno</option>
+                      <option value={3}>★★★☆☆ Bueno</option>
+                      <option value={2}>★★☆☆☆ Regular</option>
+                      <option value={1}>★☆☆☆☆ Malo</option>
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm text-gray-600 mb-1">Tu experiencia</label>
+                    <textarea value={reviewForm.comentario} onChange={(e) => setReviewForm({ ...reviewForm, comentario: e.target.value })} required rows={3} className="w-full px-3 py-2 border rounded-md" placeholder="Cuéntanos tu experiencia..."></textarea>
+                  </div>
+                  <div className="flex gap-2">
+                    <button type="submit" className="bg-teal text-white px-4 py-2 rounded-md hover:bg-teal-dark">Enviar reseña</button>
+                    <button type="button" onClick={() => setShowReviewForm(false)} className="bg-gray-200 px-4 py-2 rounded-md">Cancelar</button>
+                  </div>
+                </form>
+              ) : (
+                <button onClick={() => setShowReviewForm(true)} className="bg-teal text-white px-6 py-2 rounded-md hover:bg-teal-dark">Dejar una reseña</button>
+              )
+            ) : (
+              <button onClick={signInWithGoogle} className="bg-teal text-white px-6 py-2 rounded-md hover:bg-teal-dark">Inicia sesión para dejar una reseña</button>
+            )}
           </div>
         </div>
       </section>
