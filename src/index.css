@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .page-hero {
+    @apply relative bg-cover bg-center min-h-[40vh] flex items-center;
+  }
+  .page-hero-overlay {
+    @apply absolute inset-0 bg-gradient-to-br from-navy/90 via-navy-light/80 to-navy/70;
+  }
+  .section-label {
+    @apply inline-block text-teal text-sm font-semibold tracking-wider uppercase mb-2;
+  }
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-navy mb-4;
+  }
+  .card-modern {
+    @apply bg-white rounded-xl shadow-md border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+  .btn-primary {
+    @apply bg-teal text-white px-6 py-3 rounded-lg font-medium hover:bg-teal-dark transition-colors;
+  }
+  .btn-secondary {
+    @apply bg-navy text-white px-6 py-3 rounded-lg font-medium hover:bg-navy-light transition-colors;
+  }
+  .input-modern {
+    @apply w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent transition-all;
+  }
+}
+
 @layer base {
   :root {
     --radius: 0.5rem;

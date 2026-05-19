@@ -42,7 +42,7 @@ const SubBrokersPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="relative bg-cover bg-center h-[400px]" style={{ backgroundImage: "url('/images/sub-brokers-hero.jpg')" }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/80 to-pink-800/70"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-navy/90 via-navy-light/80 to-navy/70"></div>
         <div className="container mx-auto px-4 h-full flex items-center relative z-10">
           <div className="max-w-3xl text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Programa de Sub-Brokers</h1>

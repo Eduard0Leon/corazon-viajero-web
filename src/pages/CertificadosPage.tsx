@@ -1,48 +1,41 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../lib/AuthContext';
 
 const CertificadosPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const { user, profile } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
-    const data = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      destination: formData.get('destination'),
-      message: formData.get('message'),
-      page: 'Certificados',
-      timestamp: new Date().toISOString()
-    };
+    
+    await supabase.from('contacts').insert({
+      nombre: formData.get('name') as string,
+      email: formData.get('email') as string,
+      telefono: formData.get('phone') as string,
+      destino: formData.get('destination') as string,
+      mensaje: formData.get('message') as string,
+      origen: 'formulario_certificados'
+    });
 
-    try {
-      await fetch('https://script.google.com/macros/s/AKfycbztvTuMxPRraKTo8hv5GVwkMlnln3D45eO6IRCQervI4TUpDjpoaVkSbXOAz7Zh0QsX/exec', {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      });
-
-      alert('¡Gracias! Tu solicitud ha sido enviada correctamente. Nos pondremos en contacto contigo pronto.');
-      e.currentTarget.reset();
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Hubo un error al enviar tu solicitud. Por favor, inténtalo de nuevo.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    // WhatsApp con datos
+    const msg = `Hola! Me interesa un certificado de viaje a ${formData.get('destination')}. Soy ${formData.get('name')}.`;
+    window.open(`https://wa.me/524424530648?text=${encodeURIComponent(msg)}`, '_blank');
+    
+    setSuccess(true);
+    setIsSubmitting(false);
+    e.currentTarget.reset();
   };
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="relative bg-cover bg-center h-[400px]" style={{ backgroundImage: "url('/images/orlando-miami.jpg')" }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-cyan-800/70"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-navy/90 via-navy-light/80 to-navy/70"></div>
         <div className="container mx-auto px-4 h-full flex items-center relative z-10">
           <div className="max-w-3xl text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Certificados de Viaje</h1>
