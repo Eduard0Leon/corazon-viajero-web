@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+/* Optimizaciones móviles */
+@layer utilities {
+  /* Asegurar que las imágenes sean responsivas */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Mejorar el espaciado en móviles */
+  @media (max-width: 768px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    /* Mejorar el tamaño de los botones en móviles */
+    button:not(.no-mobile-opt), .btn {
+      min-height: 44px;
+      padding: 12px 16px;
+      font-size: 16px;
+    }
+    
+    /* Mejorar los campos de entrada en móviles */
+    input:not(.no-mobile-opt), select:not(.no-mobile-opt), textarea:not(.no-mobile-opt) {
+      min-height: 44px;
+      font-size: 16px;
+      padding: 12px;
+    }
+    
+    /* Evitar el zoom en iOS cuando se enfocan los inputs */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    select,
+    textarea {
+      font-size: 16px;
+    }
+    
+    /* Mejorar el espaciado de las secciones */
+    section {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+  }
+
+  /* Mejorar la accesibilidad táctil */
+  @media (hover: none) and (pointer: coarse) {
+    /* Aumentar el área de toque para elementos interactivos */
+    a:not(.no-touch-opt), button:not(.no-touch-opt), [role="button"]:not(.no-touch-opt) {
+      min-height: 44px;
+      min-width: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  /* Optimizaciones para pantallas muy pequeñas */
+  @media (max-width: 320px) {
+    .mobile-text-xs {
+      font-size: 0.75rem;
+    }
+    
+    .mobile-text-sm {
+      font-size: 0.875rem;
+    }
+  }
+}
+
