@@ -1,233 +1,334 @@
-import React, { useState, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-const FadeInSection = ({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) => (
+const FadeInSection = ({
+  children,
+  delay = 0,
+  className = '',
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) => (
   <motion.div
-    initial={{ opacity: 0, y: 60 }}
+    initial={{ opacity: 0, y: 50 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-150px" }}
-    transition={{ duration: 1, delay, ease: [0.25, 0.1, 0.25, 1] }}
+    viewport={{ once: true, margin: '-120px' }}
+    transition={{ duration: 0.9, delay, ease: 'easeOut' }}
     className={className}
   >
     {children}
   </motion.div>
 );
 
+const heroSlides = [
+  {
+    title: 'Islas privadas, playas abiertas',
+    eyebrow: 'Destinos extraordinarios',
+    subtitle:
+      'Viajes diseñados contigo, sin ruido y con la calma de saber que todo está pensado para disfrutar.',
+    location: 'Maldivas',
+    video:
+      'https://player.vimeo.com/external/434045526.sd.mp4?s=6cd7df8d8bbd76bdf4b573a6a1d5dd68c4fa6c15&profile_id=139&oauth2_token_id=57447761',
+    poster:
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1800&q=80',
+  },
+  {
+    title: 'Ciudades con alma y mar',
+    eyebrow: 'Viaja con intención',
+    subtitle:
+      'Lujo silencioso, atención personal y una experiencia construida alrededor de lo que a ti te emociona.',
+    location: 'Santorini',
+    video:
+      'https://player.vimeo.com/external/370467553.sd.mp4?s=63dca3a6f3ce02b0b7d810e16a3a836b6b5480a1&profile_id=139&oauth2_token_id=57447761',
+    poster:
+      'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1800&q=80',
+  },
+  {
+    title: 'Escapadas para volver distinto',
+    eyebrow: 'Comunidad de viajeros',
+    subtitle:
+      'No es solo reservar. Es pertenecer a una forma más inteligente, cercana y emocionante de viajar.',
+    location: 'Cancún',
+    video:
+      'https://player.vimeo.com/external/517374440.sd.mp4?s=8e3e2f202be8bd7e8fc0f4bc0df2a72e2d0b1a62&profile_id=139&oauth2_token_id=57447761',
+    poster:
+      'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1800&q=80',
+  },
+];
+
+const destinationPanels = [
+  {
+    image:
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80',
+    title: 'Maldivas',
+    subtitle: 'Azul infinito y calma absoluta',
+    desc:
+      'Escapadas donde cada detalle importa: agua cristalina, privacidad y un ritmo que te devuelve a ti.',
+  },
+  {
+    image:
+      'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=1200&q=80',
+    title: 'Cancún',
+    subtitle: 'Caribe con acceso inteligente',
+    desc:
+      'Playas, hoteles y experiencias seleccionadas con criterio para que ahorres sin bajar el nivel.',
+  },
+  {
+    image:
+      'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1200&q=80',
+    title: 'Santorini',
+    subtitle: 'Postales que sí existen',
+    desc:
+      'Una mezcla de lujo sereno, vistas memorables y momentos que se sienten personales desde el primer día.',
+  },
+];
+
+const experiences = [
+  {
+    title: 'Atención personal',
+    desc:
+      'Hablas con alguien que te escucha, entiende lo que buscas y filtra opciones pensando en ti.',
+  },
+  {
+    title: 'Membresía con sentido',
+    desc:
+      'Acceso a beneficios reales, precios privados y una comunidad para viajar mejor, no solo más barato.',
+  },
+  {
+    title: 'Todo online, contigo cerca',
+    desc:
+      'La operación es digital, pero la experiencia se siente cercana, humana y completamente acompañada.',
+  },
+  {
+    title: 'Diseñado para evolucionar',
+    desc:
+      'Hoy es trato personal, mañana será una operación potenciada por IA sin perder identidad ni control.',
+  },
+];
+
 const HomePage: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroImageY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const heroContentY = useTransform(scrollYProgress, [0, 1], ['0%', '18%']);
+  const heroOverlayOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0.25]);
+  const [activeSlide, setActiveSlide] = useState(0);
   const [activeDestination, setActiveDestination] = useState(0);
 
-  const destinations = [
-    { 
-      image: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1920&q=80", 
-      title: "Maldivas", 
-      subtitle: "Paraíso en la tierra",
-      desc: "Bungalows sobre el agua, arenas blancas y atardeceres que parecen pintados. Una experiencia que transforma."
-    },
-    { 
-      image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80", 
-      title: "Cancún", 
-      subtitle: "El Caribe mexicano",
-      desc: "Aguas turquesas, ruinas mayas y la mejor vida nocturna. Todo en un mismo destino."
-    },
-    { 
-      image: "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1920&q=80", 
-      title: "Santorini", 
-      subtitle: "Grecia eterna",
-      desc: "Cúpulas azules, vino local y puestas de sol que te roban el aliento."
-    },
-  ];
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide((current) => (current + 1) % heroSlides.length);
+    }, 7000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <div className="bg-[#0a0a0a] overflow-hidden">
-      
-      {/* ═══════════════════════════════════════════════════════════════
-          HERO - Fullscreen immersive (Black Tomato style)
-      ═══════════════════════════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative h-[100vh] flex items-center justify-center overflow-hidden">
-        {/* Background with parallax */}
-        <motion.div style={{ y: heroImageY }} className="absolute inset-0 scale-110">
-          <img 
-            src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=80"
-            alt="Viaje"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/50" />
-        </motion.div>
-
-        {/* Content */}
-        <motion.div style={{ opacity: heroOpacity }} className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3 }}
-            className="text-gold text-[11px] tracking-[6px] uppercase font-light mb-8"
-          >
-            Agencia de Viajes 100% Online
-          </motion.p>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.5 }}
-            className="font-serif text-white text-[clamp(42px,9vw,100px)] leading-[0.95] mb-8"
-          >
-            Entre más viajas,
-            <br />
-            <span className="italic text-gold">más vives</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.9 }}
-            className="text-white/50 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed font-light"
-          >
-            Experiencias de viaje extraordinarias diseñadas para viajeros que buscan más que un simple destino.
-          </motion.p>
-
+    <div className="bg-[#e8f6f4] text-[#0d2a31]">
+      <section ref={heroRef} className="relative h-[100vh] min-h-[720px] overflow-hidden">
+        <AnimatePresence mode="wait">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            key={activeSlide}
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: 'easeOut' }}
+            className="absolute inset-0"
           >
-            <a 
-              href="https://wa.me/524424530648"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group bg-gold text-[#0a0a0a] px-12 py-4 text-[11px] tracking-[3px] uppercase font-semibold hover:bg-white transition-all duration-500"
-            >
-              <span className="inline-block transition-transform group-hover:translate-x-1">Diseña tu viaje</span>
-            </a>
-            <Link
-              to="/descuentos"
-              className="group border border-white/30 text-white px-12 py-4 text-[11px] tracking-[3px] uppercase hover:bg-white hover:text-[#0a0a0a] transition-all duration-500"
-            >
-              <span className="inline-block transition-transform group-hover:translate-x-1">Conocer membresía</span>
-            </Link>
+            <video
+              className="h-full w-full object-cover"
+              src={heroSlides[activeSlide].video}
+              poster={heroSlides[activeSlide].poster}
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+            <motion.div
+              style={{ opacity: heroOverlayOpacity }}
+              className="absolute inset-0 bg-gradient-to-r from-[#06272d]/82 via-[#0b3b43]/45 to-[#06272d]/25"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#06272d]/85 via-transparent to-[#06272d]/18" />
           </motion.div>
-        </motion.div>
+        </AnimatePresence>
 
-        {/* Scroll indicator */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+          style={{ y: heroContentY }}
+          className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end px-6 pb-16 pt-32"
         >
-          <span className="text-white/30 text-[10px] tracking-[3px] uppercase">Scroll</span>
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            className="w-[1px] h-12 bg-gradient-to-b from-white/50 to-transparent"
-          />
+          <div className="max-w-4xl">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`content-${activeSlide}`}
+                initial={{ opacity: 0, y: 32 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.7, ease: 'easeOut' }}
+              >
+                <p className="mb-5 text-[11px] uppercase tracking-[5px] text-[#bfe9e1]">
+                  {heroSlides[activeSlide].eyebrow}
+                </p>
+                <h1 className="max-w-4xl font-serif text-[clamp(44px,8vw,96px)] leading-[0.95] text-white">
+                  {heroSlides[activeSlide].title}
+                </h1>
+                <p className="mt-6 max-w-2xl text-base leading-8 text-white/72 md:text-lg">
+                  {heroSlides[activeSlide].subtitle}
+                </p>
+                <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+                  <a
+                    href="https://wa.me/524424530648"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center bg-[#79d9cf] px-10 py-4 text-[11px] font-semibold uppercase tracking-[3px] text-[#0a2c33] transition-all duration-300 hover:bg-white"
+                  >
+                    Diseñar mi viaje
+                  </a>
+                  <Link
+                    to="/descuentos"
+                    className="inline-flex items-center justify-center border border-white/35 px-10 py-4 text-[11px] uppercase tracking-[3px] text-white transition-all duration-300 hover:bg-white/12"
+                  >
+                    Ver membresía
+                  </Link>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          <div className="mt-14 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {heroSlides.map((slide, index) => (
+                <button
+                  key={slide.location}
+                  onClick={() => setActiveSlide(index)}
+                  className={`min-w-[150px] border-b pb-3 text-left transition-all ${
+                    activeSlide === index
+                      ? 'border-[#79d9cf] text-white'
+                      : 'border-white/20 text-white/45 hover:border-white/45 hover:text-white/75'
+                  }`}
+                >
+                  <span className="block text-[10px] uppercase tracking-[3px]">
+                    {slide.location}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <div className="hidden md:flex items-center gap-3">
+              <span className="text-[10px] uppercase tracking-[3px] text-white/40">Scroll</span>
+              <motion.div
+                animate={{ y: [0, 8, 0] }}
+                transition={{ repeat: Infinity, duration: 1.6 }}
+                className="h-12 w-px bg-gradient-to-b from-white/60 to-transparent"
+              />
+            </div>
+          </div>
         </motion.div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          INTRO TEXT - Editorial style
-      ═══════════════════════════════════════════════════════════════ */}
-      <section className="py-32 md:py-48 px-6">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="bg-[#f3fbfa] px-6 py-28 md:py-36">
+        <div className="mx-auto max-w-5xl text-center">
           <FadeInSection>
-            <p className="text-gold text-[11px] tracking-[4px] uppercase mb-8">Nuestra filosofía</p>
-            <h2 className="font-serif text-white text-3xl md:text-5xl lg:text-6xl leading-tight mb-8">
-              No vendemos viajes.
+            <p className="mb-6 text-[11px] uppercase tracking-[4px] text-[#2b7a78]">
+              Lujo silencioso
+            </p>
+            <h2 className="font-serif text-4xl leading-tight text-[#0d2a31] md:text-6xl">
+              Viajes con estética, calma
               <br />
-              <span className="italic text-gold">Creamos recuerdos.</span>
+              <span className="italic text-[#2b7a78]">y trato personal</span>
             </h2>
-            <p className="text-white/40 text-lg leading-relaxed max-w-2xl mx-auto">
-              Cada viaje es una oportunidad para descubrir algo nuevo sobre el mundo y sobre ti mismo. 
-              Nosotros nos encargamos de los detalles, tú solo preocúpate de disfrutar.
+            <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-[#0d2a31]/65">
+              Corazón Viajero no quiere parecer una corporación. Quiere sentirse
+              como una relación de confianza: alguien que te entiende, cuida tu
+              presupuesto y construye contigo una forma más inteligente de viajar.
             </p>
           </FadeInSection>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          DESTINATIONS - Full width images with overlay
-      ═══════════════════════════════════════════════════════════════ */}
-      <section className="py-20">
-        <FadeInSection>
-          <div className="px-6 mb-16">
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
-              <div>
-                <p className="text-gold text-[11px] tracking-[4px] uppercase mb-4">Destinos</p>
-                <h2 className="font-serif text-white text-4xl md:text-5xl">
-                  Lugares que
-                  <br />
-                  <span className="italic text-gold">inspiran</span>
-                </h2>
-              </div>
-              <Link to="/servicios" className="text-white/40 text-sm hover:text-gold transition-colors border-b border-white/20 pb-1 hover:border-gold">
-                Ver todos los destinos →
-              </Link>
+      <section className="px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-7xl">
+          <FadeInSection className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="mb-4 text-[11px] uppercase tracking-[4px] text-[#2b7a78]">
+                Destinos
+              </p>
+              <h2 className="font-serif text-4xl text-[#0d2a31] md:text-6xl">
+                Escenarios que se sienten
+                <br />
+                <span className="italic text-[#2b7a78]">hechos a tu medida</span>
+              </h2>
             </div>
-          </div>
-        </FadeInSection>
+            <Link
+              to="/servicios"
+              className="text-sm text-[#0d2a31]/50 transition-colors hover:text-[#2b7a78]"
+            >
+              Explorar todos los destinos →
+            </Link>
+          </FadeInSection>
 
-        {/* Destination Selector */}
-        <div className="relative">
-          {/* Main Image */}
-          <div className="relative h-[70vh] overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.img
-                key={activeDestination}
-                src={destinations[activeDestination].image}
-                alt={destinations[activeDestination].title}
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.8 }}
-                className="w-full h-full object-cover"
-              />
-            </AnimatePresence>
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/80 via-transparent to-transparent" />
-            
-            {/* Content overlay */}
-            <div className="absolute bottom-0 left-0 p-8 md:p-16 max-w-2xl">
+          <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="relative overflow-hidden rounded-[28px] bg-[#0d2a31] shadow-[0_25px_60px_rgba(5,31,35,0.18)]">
               <AnimatePresence mode="wait">
-                <motion.div
+                <motion.img
                   key={activeDestination}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -30 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <p className="text-gold text-[11px] tracking-[3px] uppercase mb-3">{destinations[activeDestination].subtitle}</p>
-                  <h3 className="font-serif text-white text-4xl md:text-6xl mb-4">{destinations[activeDestination].title}</h3>
-                  <p className="text-white/50 text-sm md:text-base leading-relaxed mb-6">{destinations[activeDestination].desc}</p>
-                  <a 
-                    href="https://wa.me/524424530648"
-                    className="inline-block text-gold text-[11px] tracking-[2px] uppercase border-b border-gold pb-1 hover:text-white hover:border-white transition-colors"
-                  >
-                    Explorar destino →
-                  </a>
-                </motion.div>
+                  src={destinationPanels[activeDestination].image}
+                  alt={destinationPanels[activeDestination].title}
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.7 }}
+                  className="h-[560px] w-full object-cover"
+                />
               </AnimatePresence>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0d2a31]/88 via-[#0d2a31]/18 to-transparent" />
+              <div className="absolute bottom-0 left-0 max-w-2xl p-8 md:p-12">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`panel-${activeDestination}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.45 }}
+                  >
+                    <p className="mb-3 text-[11px] uppercase tracking-[3px] text-[#9fe5db]">
+                      {destinationPanels[activeDestination].subtitle}
+                    </p>
+                    <h3 className="font-serif text-4xl text-white md:text-6xl">
+                      {destinationPanels[activeDestination].title}
+                    </h3>
+                    <p className="mt-5 max-w-xl text-sm leading-7 text-white/72 md:text-base">
+                      {destinationPanels[activeDestination].desc}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
             </div>
-          </div>
 
-          {/* Destination Tabs */}
-          <div className="max-w-7xl mx-auto px-6 -mt-20 relative z-10">
-            <div className="flex gap-4 overflow-x-auto pb-4">
-              {destinations.map((dest, i) => (
+            <div className="flex flex-col gap-4">
+              {destinationPanels.map((destination, index) => (
                 <button
-                  key={i}
-                  onClick={() => setActiveDestination(i)}
-                  className={`flex-shrink-0 relative w-32 h-20 md:w-48 md:h-28 overflow-hidden transition-all duration-300 ${
-                    activeDestination === i ? 'ring-2 ring-gold' : 'opacity-50 hover:opacity-80'
+                  key={destination.title}
+                  onClick={() => setActiveDestination(index)}
+                  className={`group overflow-hidden rounded-[22px] border p-5 text-left transition-all ${
+                    activeDestination === index
+                      ? 'border-[#79d9cf] bg-white shadow-[0_20px_40px_rgba(8,51,58,0.12)]'
+                      : 'border-[#cfeae6] bg-[#f7fcfb] hover:border-[#9bded5] hover:bg-white'
                   }`}
                 >
-                  <img src={dest.image} alt={dest.title} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/40" />
-                  <span className="absolute bottom-2 left-2 text-white text-xs md:text-sm font-medium">{dest.title}</span>
+                  <div className="mb-4 overflow-hidden rounded-[16px]">
+                    <img
+                      src={destination.image}
+                      alt={destination.title}
+                      className="h-28 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <p className="font-serif text-2xl text-[#0d2a31]">{destination.title}</p>
+                  <p className="mt-2 text-sm leading-6 text-[#0d2a31]/58">
+                    {destination.subtitle}
+                  </p>
                 </button>
               ))}
             </div>
@@ -235,34 +336,25 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          SERVICES - Dark minimal cards
-      ═══════════════════════════════════════════════════════════════ */}
-      <section className="py-32 px-6">
-        <div className="max-w-7xl mx-auto">
-          <FadeInSection>
-            <div className="text-center mb-20">
-              <p className="text-gold text-[11px] tracking-[4px] uppercase mb-4">Servicios</p>
-              <h2 className="font-serif text-white text-4xl md:text-5xl">
-                Todo en un
-                <br />
-                <span className="italic text-gold">solo lugar</span>
-              </h2>
-            </div>
+      <section className="bg-[#0b3840] px-6 py-28 text-white md:py-32">
+        <div className="mx-auto max-w-7xl">
+          <FadeInSection className="mb-16 text-center">
+            <p className="mb-4 text-[11px] uppercase tracking-[4px] text-[#8fdcd2]">
+              Nuestra forma de trabajar
+            </p>
+            <h2 className="font-serif text-4xl md:text-5xl">
+              Digital, cercana
+              <span className="italic text-[#79d9cf]"> y con intención</span>
+            </h2>
           </FadeInSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-white/10">
-            {[
-              { icon: "✈️", title: "Vuelos", desc: "Acceso a tarifas exclusivas y conexiones premium" },
-              { icon: "🏨", title: "Hoteles", desc: "Desde boutique hasta resorts de lujo con descuentos reales" },
-              { icon: "🚢", title: "Cruceros", desc: "Las mejores navieras con upgrades y beneficios" },
-              { icon: "🎫", title: "Experiencias", desc: "Tours, actividades y momentos que no olvidarás" },
-            ].map((service, i) => (
-              <FadeInSection key={i} delay={i * 0.1}>
-                <div className="bg-[#0a0a0a] p-10 md:p-12 h-full group hover:bg-[#111] transition-colors duration-500">
-                  <div className="text-4xl mb-8">{service.icon}</div>
-                  <h3 className="text-white text-xl font-medium mb-4">{service.title}</h3>
-                  <p className="text-white/40 text-sm leading-relaxed">{service.desc}</p>
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {experiences.map((item, index) => (
+              <FadeInSection key={item.title} delay={index * 0.1}>
+                <div className="h-full rounded-[24px] border border-white/10 bg-white/[0.04] p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#79d9cf]/40 hover:bg-white/[0.07]">
+                  <div className="mb-5 h-px w-14 bg-[#79d9cf]" />
+                  <h3 className="mb-3 text-xl font-medium">{item.title}</h3>
+                  <p className="text-sm leading-7 text-white/64">{item.desc}</p>
                 </div>
               </FadeInSection>
             ))}
@@ -270,71 +362,83 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          MEMBERSHIP CTA - Full width with gradient
-      ═══════════════════════════════════════════════════════════════ */}
-      <section className="relative py-32 md:py-48 overflow-hidden">
-        <div className="absolute inset-0">
-          <img 
-            src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1920&q=80"
-            alt="Viaje"
-            className="w-full h-full object-cover opacity-30"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/90 to-[#0a0a0a]/70" />
-        </div>
-        
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+      <section className="relative overflow-hidden px-6 py-28 md:py-36">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#d9f3ef] via-[#effaf8] to-[#cde9e5]" />
+        <div className="absolute -right-24 top-8 h-72 w-72 rounded-full bg-[#79d9cf]/20 blur-3xl" />
+        <div className="absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-[#2b7a78]/10 blur-3xl" />
+        <div className="relative mx-auto max-w-5xl text-center">
           <FadeInSection>
-            <p className="text-gold text-[11px] tracking-[4px] uppercase mb-8">Membresía Exclusiva</p>
-            <h2 className="font-serif text-white text-4xl md:text-6xl lg:text-7xl leading-tight mb-8">
-              Ahorra hasta
-              <br />
-              <span className="italic text-gold">$500 USD</span>
-              <br />
-              por viaje
-            </h2>
-            <p className="text-white/40 text-lg leading-relaxed max-w-2xl mx-auto mb-12">
-              Únete a nuestra comunidad de viajeros inteligentes. Acceso a tarifas corporativas, 
-              asistente personal y una red de beneficios que crece cada día.
+            <p className="mb-6 text-[11px] uppercase tracking-[4px] text-[#2b7a78]">
+              Membresía Corazón Viajero
             </p>
-            <Link
-              to="/descuentos"
-              className="inline-block bg-gold text-[#0a0a0a] px-14 py-5 text-[11px] tracking-[3px] uppercase font-semibold hover:bg-white transition-colors duration-500"
-            >
-              Conocer membresía
-            </Link>
+            <h2 className="font-serif text-4xl leading-tight text-[#0d2a31] md:text-6xl">
+              Una comunidad para
+              <br />
+              <span className="italic text-[#2b7a78]">viajar mejor</span>
+            </h2>
+            <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-[#0d2a31]/64">
+              Queremos formar una familia global de viajeros que ahorran con
+              inteligencia, se inspiran entre sí y sienten que alguien los acompaña
+              desde el primer mensaje hasta el regreso a casa.
+            </p>
+            <div className="mt-12 flex flex-col justify-center gap-4 sm:flex-row">
+              <Link
+                to="/descuentos"
+                className="inline-flex items-center justify-center bg-[#0d2a31] px-12 py-4 text-[11px] font-semibold uppercase tracking-[3px] text-white transition-colors hover:bg-[#2b7a78]"
+              >
+                Conocer membresía
+              </Link>
+              <a
+                href="https://wa.me/524424530648"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center border border-[#0d2a31]/15 px-12 py-4 text-[11px] uppercase tracking-[3px] text-[#0d2a31] transition-all hover:border-[#2b7a78] hover:text-[#2b7a78]"
+              >
+                Hablar contigo
+              </a>
+            </div>
           </FadeInSection>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          TESTIMONIALS - Minimal elegant
-      ═══════════════════════════════════════════════════════════════ */}
-      <section className="py-32 px-6 border-t border-white/[0.05]">
-        <div className="max-w-6xl mx-auto">
-          <FadeInSection>
-            <div className="text-center mb-20">
-              <p className="text-gold text-[11px] tracking-[4px] uppercase mb-4">Testimonios</p>
-              <h2 className="font-serif text-white text-4xl md:text-5xl">
-                Lo que dicen
-                <br />
-                <span className="italic text-gold">nuestros viajeros</span>
-              </h2>
-            </div>
+      <section className="bg-[#f7fcfb] px-6 py-28 md:py-32">
+        <div className="mx-auto max-w-6xl">
+          <FadeInSection className="mb-16 text-center">
+            <p className="mb-4 text-[11px] uppercase tracking-[4px] text-[#2b7a78]">
+              Testimonios
+            </p>
+            <h2 className="font-serif text-4xl text-[#0d2a31] md:text-5xl">
+              Viajeros que ya se
+              <span className="italic text-[#2b7a78]"> sienten parte</span>
+            </h2>
           </FadeInSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid gap-8 md:grid-cols-3">
             {[
-              { name: "María R.", location: "CDMX", text: "La membresía se pagó sola en mi primer viaje. Ahora no concibo viajar sin ella." },
-              { name: "Carlos M.", location: "Guadalajara", text: "El servicio personalizado es otro nivel. Siempre encuentran opciones que ni sabía que existían." },
-              { name: "Ana S.", location: "Monterrey", text: "Mejor calidad, menos precio. Así de simple. Llevo 3 años siendo miembro y no pienso dejarlo." },
-            ].map((testimonial, i) => (
-              <FadeInSection key={i} delay={i * 0.15}>
-                <div className="border-t border-white/10 pt-8">
-                  <p className="text-white/60 text-lg leading-relaxed mb-8 italic font-serif">"{testimonial.text}"</p>
-                  <div>
-                    <p className="text-white font-medium">{testimonial.name}</p>
-                    <p className="text-white/30 text-sm">{testimonial.location}</p>
+              {
+                name: 'María R.',
+                location: 'CDMX',
+                text: 'Sentí que me estaban recomendando algo pensado para mí, no vendiéndome lo mismo de siempre.',
+              },
+              {
+                name: 'Carlos M.',
+                location: 'Guadalajara',
+                text: 'La experiencia fue cercana, clara y elegante. Justo lo que buscaba para viajar sin complicarme.',
+              },
+              {
+                name: 'Ana S.',
+                location: 'Monterrey',
+                text: 'Aquí encontré precios inteligentes, sí, pero también acompañamiento de verdad y eso cambia todo.',
+              },
+            ].map((testimonial, index) => (
+              <FadeInSection key={testimonial.name} delay={index * 0.12}>
+                <div className="h-full rounded-[24px] border border-[#d8ece8] bg-white p-8 shadow-[0_18px_40px_rgba(8,51,58,0.06)]">
+                  <p className="font-serif text-2xl leading-10 text-[#0d2a31]">
+                    “{testimonial.text}”
+                  </p>
+                  <div className="mt-8 border-t border-[#e6f2f0] pt-5">
+                    <p className="font-medium text-[#0d2a31]">{testimonial.name}</p>
+                    <p className="text-sm text-[#0d2a31]/48">{testimonial.location}</p>
                   </div>
                 </div>
               </FadeInSection>
@@ -343,31 +447,31 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          FINAL CTA
-      ═══════════════════════════════════════════════════════════════ */}
-      <section className="py-24 px-6 border-t border-white/[0.05]">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="bg-[#0b3840] px-6 py-24 text-white">
+        <div className="mx-auto max-w-4xl text-center">
           <FadeInSection>
-            <h2 className="font-serif text-white text-3xl md:text-4xl mb-6">
-              ¿Listo para tu próxima
-              <span className="italic text-gold"> aventura</span>?
+            <h2 className="font-serif text-3xl md:text-4xl">
+              Si vamos a construir algo contigo,
+              <span className="italic text-[#79d9cf]"> que se note desde aquí</span>
             </h2>
-            <p className="text-white/40 mb-10">Escríbenos y diseñemos juntos el viaje de tus sueños.</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
+            <p className="mx-auto mt-6 max-w-2xl text-white/58">
+              Empecemos por una conversación real. Sin presión, sin fórmulas, con la
+              intención de crear viajes y relaciones que duren.
+            </p>
+            <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+              <a
                 href="https://wa.me/524424530648"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gold text-[#0a0a0a] px-12 py-4 text-[11px] tracking-[3px] uppercase font-semibold hover:bg-white transition-colors duration-500"
+                className="inline-flex items-center justify-center bg-[#79d9cf] px-12 py-4 text-[11px] font-semibold uppercase tracking-[3px] text-[#0b3840] transition-colors hover:bg-white"
               >
                 WhatsApp
               </a>
               <Link
                 to="/contacto"
-                className="border border-white/20 text-white px-12 py-4 text-[11px] tracking-[3px] uppercase hover:bg-white hover:text-[#0a0a0a] transition-all duration-500"
+                className="inline-flex items-center justify-center border border-white/22 px-12 py-4 text-[11px] uppercase tracking-[3px] text-white transition-colors hover:bg-white/10"
               >
-                Contacto
+                Ir a contacto
               </Link>
             </div>
           </FadeInSection>

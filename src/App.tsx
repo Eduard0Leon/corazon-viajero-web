@@ -20,9 +20,9 @@ function AppContent() {
   const isAdminRoute = location.pathname === '/admin' || location.pathname === '/login';
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0a0a0a]">
+    <div className="flex flex-col min-h-screen bg-[#e8f6f4]">
       {!isAdminRoute && <Header />}
-      <main className="flex-grow bg-[#0a0a0a]">
+      <main className="flex-grow bg-[#e8f6f4]">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/certificados" element={<CertificadosPage />} />

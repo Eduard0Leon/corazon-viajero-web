@@ -38,7 +38,7 @@ const Header: React.FC = () => {
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled 
-            ? 'bg-[#0a0a0a]/95 backdrop-blur-md py-4 shadow-lg' 
+            ? 'bg-[#f4fbfa]/92 backdrop-blur-md py-4 shadow-[0_12px_40px_rgba(8,51,58,0.08)]' 
             : 'bg-transparent py-6'
         }`}
       >
@@ -47,8 +47,8 @@ const Header: React.FC = () => {
           <Link to="/" className="flex items-center gap-3">
             <img src="/images/logo_oficial_corazon_viajero.png" alt="Corazón Viajero" className="h-10 w-auto" />
             <div className="hidden sm:flex flex-col">
-              <span className="text-white text-sm font-semibold tracking-wide">Corazón Viajero</span>
-              <span className="text-gold text-[10px] tracking-[2px] uppercase">Entre más viajas, más vives</span>
+              <span className={`${scrolled ? 'text-[#0d2a31]' : 'text-white'} text-sm font-semibold tracking-wide transition-colors`}>Corazón Viajero</span>
+              <span className="text-[#2b7a78] text-[10px] tracking-[2px] uppercase">Entre más viajas, más vives</span>
             </div>
           </Link>
 
@@ -60,8 +60,10 @@ const Header: React.FC = () => {
                 to={link.to}
                 className={`text-[13px] tracking-wide transition-colors duration-300 ${
                   location.pathname === link.to
-                    ? 'text-gold'
-                    : 'text-white/70 hover:text-white'
+                    ? 'text-[#2b7a78]'
+                    : scrolled
+                      ? 'text-[#0d2a31]/70 hover:text-[#0d2a31]'
+                      : 'text-white/72 hover:text-white'
                 }`}
               >
                 {link.label}
@@ -91,16 +93,16 @@ const Header: React.FC = () => {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 top-12 bg-[#0a0a0a] border border-white/10 py-2 w-48 shadow-xl"
+                      className="absolute right-0 top-12 w-48 border border-[#d8ece8] bg-white py-2 shadow-xl"
                     >
-                      <p className="px-4 py-2 text-xs text-white/40 truncate">{user.email}</p>
-                      <hr className="border-white/10 my-1" />
+                      <p className="px-4 py-2 text-xs text-[#0d2a31]/40 truncate">{user.email}</p>
+                      <hr className="border-[#e6f2f0] my-1" />
                       {user.email === ADMIN_EMAIL && (
-                        <Link to="/admin" className="block px-4 py-2 text-sm text-white/70 hover:text-gold hover:bg-white/5" onClick={() => setShowUserMenu(false)}>
+                        <Link to="/admin" className="block px-4 py-2 text-sm text-[#0d2a31]/70 hover:bg-[#f4fbfa] hover:text-[#2b7a78]" onClick={() => setShowUserMenu(false)}>
                           Panel Admin
                         </Link>
                       )}
-                      <button onClick={() => { signOut(); setShowUserMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-white/70 hover:text-red-400 hover:bg-white/5">
+                      <button onClick={() => { signOut(); setShowUserMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-[#0d2a31]/70 hover:bg-[#fdf5f5] hover:text-red-500">
                         Cerrar sesión
                       </button>
                     </motion.div>
@@ -110,7 +112,7 @@ const Header: React.FC = () => {
             ) : (
               <button
                 onClick={signInWithGoogle}
-                className="text-white/50 text-[13px] hover:text-white transition-colors"
+                className={`${scrolled ? 'text-[#0d2a31]/55 hover:text-[#0d2a31]' : 'text-white/55 hover:text-white'} text-[13px] transition-colors`}
               >
                 Iniciar sesión
               </button>
@@ -120,7 +122,7 @@ const Header: React.FC = () => {
               href="https://wa.me/524424530648"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gold text-navy px-6 py-2.5 text-[12px] tracking-widest uppercase font-semibold hover:bg-white transition-colors duration-300"
+              className="bg-[#79d9cf] text-[#0d2a31] px-6 py-2.5 text-[12px] tracking-widest uppercase font-semibold hover:bg-[#a7ece3] transition-colors duration-300"
             >
               Cotizar
             </a>
@@ -134,15 +136,15 @@ const Header: React.FC = () => {
           >
             <motion.span 
               animate={{ rotate: isMenuOpen ? 45 : 0, y: isMenuOpen ? 6 : 0 }}
-              className="block w-6 h-[2px] bg-white"
+              className={`block w-6 h-[2px] ${scrolled ? 'bg-[#0d2a31]' : 'bg-white'}`}
             />
             <motion.span 
               animate={{ opacity: isMenuOpen ? 0 : 1 }}
-              className="block w-6 h-[2px] bg-white"
+              className={`block w-6 h-[2px] ${scrolled ? 'bg-[#0d2a31]' : 'bg-white'}`}
             />
             <motion.span 
               animate={{ rotate: isMenuOpen ? -45 : 0, y: isMenuOpen ? -6 : 0 }}
-              className="block w-6 h-[2px] bg-white"
+              className={`block w-6 h-[2px] ${scrolled ? 'bg-[#0d2a31]' : 'bg-white'}`}
             />
           </button>
         </div>
@@ -156,7 +158,7 @@ const Header: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 bg-[#0a0a0a] flex flex-col items-center justify-center gap-8 lg:hidden"
+            className="fixed inset-0 z-40 bg-[#e8f6f4] flex flex-col items-center justify-center gap-8 lg:hidden"
           >
             {navLinks.map((link, i) => (
               <motion.div
@@ -168,7 +170,7 @@ const Header: React.FC = () => {
                 <Link
                   to={link.to}
                   onClick={() => setIsMenuOpen(false)}
-                  className="text-white text-2xl font-serif hover:text-gold transition-colors"
+                  className="text-[#0d2a31] text-2xl font-serif hover:text-[#2b7a78] transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -181,11 +183,11 @@ const Header: React.FC = () => {
               className="flex flex-col gap-4 mt-8"
             >
               {user ? (
-                <button onClick={() => { signOut(); setIsMenuOpen(false); }} className="text-white/50 hover:text-white">
+                <button onClick={() => { signOut(); setIsMenuOpen(false); }} className="text-[#0d2a31]/55 hover:text-[#0d2a31]">
                   Cerrar sesión
                 </button>
               ) : (
-                <button onClick={() => { signInWithGoogle(); setIsMenuOpen(false); }} className="text-white/50 hover:text-white">
+                <button onClick={() => { signInWithGoogle(); setIsMenuOpen(false); }} className="text-[#0d2a31]/55 hover:text-[#0d2a31]">
                   Iniciar sesión
                 </button>
               )}
@@ -193,7 +195,7 @@ const Header: React.FC = () => {
                 href="https://wa.me/524424530648"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gold text-navy px-8 py-3 text-sm tracking-widest uppercase font-semibold"
+                className="bg-[#79d9cf] text-[#0d2a31] px-8 py-3 text-sm tracking-widest uppercase font-semibold"
               >
                 Cotizar mi viaje
               </a>
