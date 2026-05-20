@@ -1,308 +1,376 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-const FadeIn = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => (
+const FadeInSection = ({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) => (
   <motion.div
-    initial={{ opacity: 0, y: 30 }}
+    initial={{ opacity: 0, y: 60 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    transition={{ duration: 0.8, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+    viewport={{ once: true, margin: "-150px" }}
+    transition={{ duration: 1, delay, ease: [0.25, 0.1, 0.25, 1] }}
+    className={className}
   >
     {children}
   </motion.div>
 );
 
 const HomePage: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: containerRef });
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.15], [1, 1.1]);
-  const [searchOpen, setSearchOpen] = useState(false);
-
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const destino = formData.get('destino') as string || '';
-    const fechas = formData.get('fechas') as string || '';
-    const viajeros = formData.get('viajeros') as string || '1';
-    const msg = `¡Hola! Me interesa viajar a ${destino || '(por definir)'}.\n• Fechas: ${fechas || 'Flexibles'}\n• Viajeros: ${viajeros}\n¿Podrían ayudarme con opciones?`;
-    window.open(`https://wa.me/524424530648?text=${encodeURIComponent(msg)}`, '_blank');
-  };
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const heroImageY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const [activeDestination, setActiveDestination] = useState(0);
 
   const destinations = [
-    { image: "/images/orlando.jpg", title: "Orlando", subtitle: "Magia sin límites", desc: "Parques temáticos, compras y diversión para toda la familia con precios exclusivos para miembros." },
-    { image: "/images/miami.jpg", title: "Miami", subtitle: "Sol y estilo", desc: "Playas paradisíacas, vida nocturna vibrante y gastronomía que te sorprenderá." },
-    { image: "/images/cancun.jpg", title: "Cancún", subtitle: "Paraíso caribeño", desc: "Aguas turquesas, resorts de lujo y una cultura milenaria por descubrir." },
-  ];
-
-  const experiences = [
-    { icon: "✈️", title: "Vuelos", desc: "Hasta 40% de descuento en rutas seleccionadas" },
-    { icon: "🏨", title: "Hoteles", desc: "Acceso a tarifas corporativas y membresías" },
-    { icon: "🚢", title: "Cruceros", desc: "Cabinas con upgrades gratuitos" },
-    { icon: "🎢", title: "Parques", desc: "Entradas VIP sin filas" },
+    { 
+      image: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1920&q=80", 
+      title: "Maldivas", 
+      subtitle: "Paraíso en la tierra",
+      desc: "Bungalows sobre el agua, arenas blancas y atardeceres que parecen pintados. Una experiencia que transforma."
+    },
+    { 
+      image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80", 
+      title: "Cancún", 
+      subtitle: "El Caribe mexicano",
+      desc: "Aguas turquesas, ruinas mayas y la mejor vida nocturna. Todo en un mismo destino."
+    },
+    { 
+      image: "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1920&q=80", 
+      title: "Santorini", 
+      subtitle: "Grecia eterna",
+      desc: "Cúpulas azules, vino local y puestas de sol que te roban el aliento."
+    },
   ];
 
   return (
-    <div ref={containerRef} className="bg-[#0a0a0a]">
-      {/* HERO - Full screen immersive */}
-      <motion.section 
-        style={{ opacity: heroOpacity }}
-        className="relative h-[100dvh] flex items-center justify-center overflow-hidden"
-      >
-        <motion.div 
-          style={{ scale: heroScale }}
-          className="absolute inset-0"
-        >
+    <div className="bg-[#0a0a0a] overflow-hidden">
+      
+      {/* ═══════════════════════════════════════════════════════════════
+          HERO - Fullscreen immersive (Black Tomato style)
+      ═══════════════════════════════════════════════════════════════ */}
+      <section ref={heroRef} className="relative h-[100vh] flex items-center justify-center overflow-hidden">
+        {/* Background with parallax */}
+        <motion.div style={{ y: heroImageY }} className="absolute inset-0 scale-110">
           <img 
-            src="/images/hero-travel.jpg" 
+            src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=80"
             alt="Viaje"
             className="w-full h-full object-cover"
-            onError={(e) => { (e.target as HTMLImageElement).src = '/images/blog-hero.jpg'; }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/80" />
+          <div className="absolute inset-0 bg-black/50" />
         </motion.div>
 
-        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+        {/* Content */}
+        <motion.div style={{ opacity: heroOpacity }} className="relative z-10 text-center px-6 max-w-5xl mx-auto">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-gold text-xs tracking-[6px] uppercase font-light mb-8"
+            transition={{ duration: 1, delay: 0.3 }}
+            className="text-gold text-[11px] tracking-[6px] uppercase font-light mb-8"
           >
             Agencia de Viajes 100% Online
           </motion.p>
 
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.4 }}
-            className="text-white text-[clamp(40px,10vw,90px)] font-bold leading-[0.95] mb-8"
+            transition={{ duration: 1.2, delay: 0.5 }}
+            className="font-serif text-white text-[clamp(42px,9vw,100px)] leading-[0.95] mb-8"
           >
             Entre más viajas,
             <br />
-            <span className="text-gold italic font-light">más vives</span>
+            <span className="italic text-gold">más vives</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-white/60 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed font-light"
+            transition={{ duration: 1, delay: 0.9 }}
+            className="text-white/50 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed font-light"
           >
-            Descubre destinos extraordinarios con precios exclusivos. 
-            Únete a nuestra comunidad de viajeros y transforma cada viaje en una experiencia inolvidable.
+            Experiencias de viaje extraordinarias diseñadas para viajeros que buscan más que un simple destino.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
+            transition={{ duration: 0.8, delay: 1.2 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <a 
               href="https://wa.me/524424530648"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gold text-navy px-10 py-4 text-sm tracking-widest uppercase font-semibold hover:bg-white transition-colors duration-300"
+              className="group bg-gold text-[#0a0a0a] px-12 py-4 text-[11px] tracking-[3px] uppercase font-semibold hover:bg-white transition-all duration-500"
             >
-              Cotizar mi viaje
+              <span className="inline-block transition-transform group-hover:translate-x-1">Diseña tu viaje</span>
             </a>
-            <button 
-              onClick={() => setSearchOpen(!searchOpen)}
-              className="border border-white/30 text-white px-10 py-4 text-sm tracking-widest uppercase hover:bg-white/10 transition-colors duration-300"
+            <Link
+              to="/descuentos"
+              className="group border border-white/30 text-white px-12 py-4 text-[11px] tracking-[3px] uppercase hover:bg-white hover:text-[#0a0a0a] transition-all duration-500"
             >
-              {searchOpen ? 'Cerrar' : 'Buscar destino'}
-            </button>
+              <span className="inline-block transition-transform group-hover:translate-x-1">Conocer membresía</span>
+            </Link>
           </motion.div>
-
-          {/* Search Box */}
-          <motion.div
-            initial={false}
-            animate={{ height: searchOpen ? 'auto' : 0, opacity: searchOpen ? 1 : 0 }}
-            transition={{ duration: 0.4 }}
-            className="overflow-hidden mt-8"
-          >
-            <form onSubmit={handleSearch} className="bg-white/5 backdrop-blur-md border border-white/10 p-6 max-w-2xl mx-auto">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="text-left">
-                  <label className="text-white/40 text-[10px] uppercase tracking-widest mb-2 block">Destino</label>
-                  <input name="destino" type="text" placeholder="¿A dónde?" className="w-full bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/20 focus:outline-none focus:border-gold transition-colors" />
-                </div>
-                <div className="text-left">
-                  <label className="text-white/40 text-[10px] uppercase tracking-widest mb-2 block">Fechas</label>
-                  <input name="fechas" type="text" placeholder="¿Cuándo?" className="w-full bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/20 focus:outline-none focus:border-gold transition-colors" />
-                </div>
-                <div className="text-left">
-                  <label className="text-white/40 text-[10px] uppercase tracking-widest mb-2 block">Viajeros</label>
-                  <select name="viajeros" className="w-full bg-transparent border-b border-white/20 pb-2 text-white focus:outline-none focus:border-gold transition-colors">
-                    <option value="1" className="bg-navy">1 Adulto</option>
-                    <option value="2" className="bg-navy">2 Adultos</option>
-                    <option value="3" className="bg-navy">3+ Adultos</option>
-                    <option value="Familia" className="bg-navy">Familia</option>
-                  </select>
-                </div>
-              </div>
-              <button type="submit" className="w-full mt-6 bg-teal text-white py-3 text-sm uppercase tracking-widest hover:bg-teal-dark transition-colors">
-                Buscar
-              </button>
-            </form>
-          </motion.div>
-        </div>
+        </motion.div>
 
         {/* Scroll indicator */}
         <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2 }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
         >
-          <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-white/40 to-transparent" />
+          <span className="text-white/30 text-[10px] tracking-[3px] uppercase">Scroll</span>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+            className="w-[1px] h-12 bg-gradient-to-b from-white/50 to-transparent"
+          />
         </motion.div>
-      </motion.section>
+      </section>
 
-      {/* DESTINATIONS - Editorial style */}
-      <section className="py-32 px-6">
-        <div className="max-w-7xl mx-auto">
-          <FadeIn>
-            <div className="flex items-end justify-between mb-16">
+      {/* ═══════════════════════════════════════════════════════════════
+          INTRO TEXT - Editorial style
+      ═══════════════════════════════════════════════════════════════ */}
+      <section className="py-32 md:py-48 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <FadeInSection>
+            <p className="text-gold text-[11px] tracking-[4px] uppercase mb-8">Nuestra filosofía</p>
+            <h2 className="font-serif text-white text-3xl md:text-5xl lg:text-6xl leading-tight mb-8">
+              No vendemos viajes.
+              <br />
+              <span className="italic text-gold">Creamos recuerdos.</span>
+            </h2>
+            <p className="text-white/40 text-lg leading-relaxed max-w-2xl mx-auto">
+              Cada viaje es una oportunidad para descubrir algo nuevo sobre el mundo y sobre ti mismo. 
+              Nosotros nos encargamos de los detalles, tú solo preocúpate de disfrutar.
+            </p>
+          </FadeInSection>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          DESTINATIONS - Full width images with overlay
+      ═══════════════════════════════════════════════════════════════ */}
+      <section className="py-20">
+        <FadeInSection>
+          <div className="px-6 mb-16">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div>
-                <p className="text-gold text-xs tracking-[4px] uppercase mb-4">Destinos</p>
-                <h2 className="text-white text-4xl md:text-5xl font-bold">Lugares que te
+                <p className="text-gold text-[11px] tracking-[4px] uppercase mb-4">Destinos</p>
+                <h2 className="font-serif text-white text-4xl md:text-5xl">
+                  Lugares que
                   <br />
-                  <span className="text-gold italic font-light">harán soñar</span>
+                  <span className="italic text-gold">inspiran</span>
                 </h2>
               </div>
-              <Link to="/servicios" className="hidden md:block text-white/50 text-sm hover:text-gold transition-colors border-b border-white/20 pb-1 hover:border-gold">
+              <Link to="/servicios" className="text-white/40 text-sm hover:text-gold transition-colors border-b border-white/20 pb-1 hover:border-gold">
                 Ver todos los destinos →
               </Link>
             </div>
-          </FadeIn>
+          </div>
+        </FadeInSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {destinations.map((dest, i) => (
-              <FadeIn key={i} delay={i * 0.15}>
-                <div className="group cursor-pointer">
-                  <div className="relative h-[500px] overflow-hidden mb-6">
-                    <img 
-                      src={dest.image} 
-                      alt={dest.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      onError={(e) => { (e.target as HTMLImageElement).src = '/images/blog-hero.jpg'; }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 p-8">
-                      <p className="text-gold text-xs tracking-[3px] uppercase mb-2">{dest.subtitle}</p>
-                      <h3 className="text-white text-3xl font-bold">{dest.title}</h3>
-                    </div>
-                  </div>
-                  <p className="text-white/50 text-sm leading-relaxed">{dest.desc}</p>
-                </div>
-              </FadeIn>
-            ))}
+        {/* Destination Selector */}
+        <div className="relative">
+          {/* Main Image */}
+          <div className="relative h-[70vh] overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={activeDestination}
+                src={destinations[activeDestination].image}
+                alt={destinations[activeDestination].title}
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8 }}
+                className="w-full h-full object-cover"
+              />
+            </AnimatePresence>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/80 via-transparent to-transparent" />
+            
+            {/* Content overlay */}
+            <div className="absolute bottom-0 left-0 p-8 md:p-16 max-w-2xl">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeDestination}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -30 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <p className="text-gold text-[11px] tracking-[3px] uppercase mb-3">{destinations[activeDestination].subtitle}</p>
+                  <h3 className="font-serif text-white text-4xl md:text-6xl mb-4">{destinations[activeDestination].title}</h3>
+                  <p className="text-white/50 text-sm md:text-base leading-relaxed mb-6">{destinations[activeDestination].desc}</p>
+                  <a 
+                    href="https://wa.me/524424530648"
+                    className="inline-block text-gold text-[11px] tracking-[2px] uppercase border-b border-gold pb-1 hover:text-white hover:border-white transition-colors"
+                  >
+                    Explorar destino →
+                  </a>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* Destination Tabs */}
+          <div className="max-w-7xl mx-auto px-6 -mt-20 relative z-10">
+            <div className="flex gap-4 overflow-x-auto pb-4">
+              {destinations.map((dest, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveDestination(i)}
+                  className={`flex-shrink-0 relative w-32 h-20 md:w-48 md:h-28 overflow-hidden transition-all duration-300 ${
+                    activeDestination === i ? 'ring-2 ring-gold' : 'opacity-50 hover:opacity-80'
+                  }`}
+                >
+                  <img src={dest.image} alt={dest.title} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/40" />
+                  <span className="absolute bottom-2 left-2 text-white text-xs md:text-sm font-medium">{dest.title}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* EXPERIENCES - Dark cards */}
-      <section className="py-32 px-6 bg-[#0f0f0f]">
-        <div className="max-w-7xl mx-auto">
-          <FadeIn>
-            <div className="text-center mb-20">
-              <p className="text-gold text-xs tracking-[4px] uppercase mb-4">Experiencias</p>
-              <h2 className="text-white text-4xl md:text-5xl font-bold">Todo lo que necesitas
-                <br />
-                <span className="text-gold italic font-light">en un solo lugar</span>
-              </h2>
-            </div>
-          </FadeIn>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {experiences.map((exp, i) => (
-              <FadeIn key={i} delay={i * 0.1}>
-                <div className="bg-white/[0.03] border border-white/[0.06] p-8 hover:bg-white/[0.06] hover:border-gold/30 transition-all duration-500 group">
-                  <div className="text-4xl mb-6">{exp.icon}</div>
-                  <h3 className="text-white text-xl font-semibold mb-3">{exp.title}</h3>
-                  <p className="text-white/40 text-sm leading-relaxed">{exp.desc}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* MEMBERSHIP CTA */}
-      <section className="py-32 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy-light to-navy" />
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <FadeIn>
-            <p className="text-gold text-xs tracking-[4px] uppercase mb-6">Membresía</p>
-            <h2 className="text-white text-4xl md:text-6xl font-bold mb-8 leading-tight">
-              Únete a la comunidad
-              <br />
-              <span className="text-gold italic font-light">de viajeros inteligentes</span>
-            </h2>
-            <p className="text-white/50 text-lg mb-12 max-w-2xl mx-auto leading-relaxed">
-              Ahorra hasta $500 USD por viaje. Acceso exclusivo a tarifas, comunidad privada y un asistente personal 
-              que planea todo por ti.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/descuentos" className="bg-gold text-navy px-10 py-4 text-sm tracking-widest uppercase font-semibold hover:bg-white transition-colors">
-                Conocer membresía
-              </Link>
-              <a href="https://wa.me/524424530648" target="_blank" rel="noopener noreferrer" className="border border-white/30 text-white px-10 py-4 text-sm tracking-widest uppercase hover:bg-white/10 transition-colors">
-                Hablar con un asesor
-              </a>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* TESTIMONIALS */}
+      {/* ═══════════════════════════════════════════════════════════════
+          SERVICES - Dark minimal cards
+      ═══════════════════════════════════════════════════════════════ */}
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto">
-          <FadeIn>
+          <FadeInSection>
             <div className="text-center mb-20">
-              <p className="text-gold text-xs tracking-[4px] uppercase mb-4">Testimonios</p>
-              <h2 className="text-white text-4xl md:text-5xl font-bold">Lo que dicen
+              <p className="text-gold text-[11px] tracking-[4px] uppercase mb-4">Servicios</p>
+              <h2 className="font-serif text-white text-4xl md:text-5xl">
+                Todo en un
                 <br />
-                <span className="text-gold italic font-light">nuestros viajeros</span>
+                <span className="italic text-gold">solo lugar</span>
               </h2>
             </div>
-          </FadeIn>
+          </FadeInSection>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-white/10">
+            {[
+              { icon: "✈️", title: "Vuelos", desc: "Acceso a tarifas exclusivas y conexiones premium" },
+              { icon: "🏨", title: "Hoteles", desc: "Desde boutique hasta resorts de lujo con descuentos reales" },
+              { icon: "🚢", title: "Cruceros", desc: "Las mejores navieras con upgrades y beneficios" },
+              { icon: "🎫", title: "Experiencias", desc: "Tours, actividades y momentos que no olvidarás" },
+            ].map((service, i) => (
+              <FadeInSection key={i} delay={i * 0.1}>
+                <div className="bg-[#0a0a0a] p-10 md:p-12 h-full group hover:bg-[#111] transition-colors duration-500">
+                  <div className="text-4xl mb-8">{service.icon}</div>
+                  <h3 className="text-white text-xl font-medium mb-4">{service.title}</h3>
+                  <p className="text-white/40 text-sm leading-relaxed">{service.desc}</p>
+                </div>
+              </FadeInSection>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          MEMBERSHIP CTA - Full width with gradient
+      ═══════════════════════════════════════════════════════════════ */}
+      <section className="relative py-32 md:py-48 overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1920&q=80"
+            alt="Viaje"
+            className="w-full h-full object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/90 to-[#0a0a0a]/70" />
+        </div>
+        
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+          <FadeInSection>
+            <p className="text-gold text-[11px] tracking-[4px] uppercase mb-8">Membresía Exclusiva</p>
+            <h2 className="font-serif text-white text-4xl md:text-6xl lg:text-7xl leading-tight mb-8">
+              Ahorra hasta
+              <br />
+              <span className="italic text-gold">$500 USD</span>
+              <br />
+              por viaje
+            </h2>
+            <p className="text-white/40 text-lg leading-relaxed max-w-2xl mx-auto mb-12">
+              Únete a nuestra comunidad de viajeros inteligentes. Acceso a tarifas corporativas, 
+              asistente personal y una red de beneficios que crece cada día.
+            </p>
+            <Link
+              to="/descuentos"
+              className="inline-block bg-gold text-[#0a0a0a] px-14 py-5 text-[11px] tracking-[3px] uppercase font-semibold hover:bg-white transition-colors duration-500"
+            >
+              Conocer membresía
+            </Link>
+          </FadeInSection>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          TESTIMONIALS - Minimal elegant
+      ═══════════════════════════════════════════════════════════════ */}
+      <section className="py-32 px-6 border-t border-white/[0.05]">
+        <div className="max-w-6xl mx-auto">
+          <FadeInSection>
+            <div className="text-center mb-20">
+              <p className="text-gold text-[11px] tracking-[4px] uppercase mb-4">Testimonios</p>
+              <h2 className="font-serif text-white text-4xl md:text-5xl">
+                Lo que dicen
+                <br />
+                <span className="italic text-gold">nuestros viajeros</span>
+              </h2>
+            </div>
+          </FadeInSection>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { name: "María R.", text: "Nunca pensé que podría ahorrar tanto. La membresía se pagó sola en mi primer viaje a Orlando." },
-              { name: "Carlos M.", text: "El servicio personalizado es increíble. Mi asesor encontró opciones que ni sabía que existían." },
-              { name: "Ana S.", text: "Desde que soy miembro, mis vacaciones son otra cosa. Mejor calidad, menos precio." },
-            ].map((t, i) => (
-              <FadeIn key={i} delay={i * 0.15}>
-                <div className="border border-white/[0.08] p-8 hover:border-gold/30 transition-colors duration-500">
-                  <p className="text-white/60 text-lg leading-relaxed mb-8 italic">"{t.text}"</p>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-teal to-navy flex items-center justify-center text-white font-bold">
-                      {t.name[0]}
-                    </div>
-                    <p className="text-white font-medium">{t.name}</p>
+              { name: "María R.", location: "CDMX", text: "La membresía se pagó sola en mi primer viaje. Ahora no concibo viajar sin ella." },
+              { name: "Carlos M.", location: "Guadalajara", text: "El servicio personalizado es otro nivel. Siempre encuentran opciones que ni sabía que existían." },
+              { name: "Ana S.", location: "Monterrey", text: "Mejor calidad, menos precio. Así de simple. Llevo 3 años siendo miembro y no pienso dejarlo." },
+            ].map((testimonial, i) => (
+              <FadeInSection key={i} delay={i * 0.15}>
+                <div className="border-t border-white/10 pt-8">
+                  <p className="text-white/60 text-lg leading-relaxed mb-8 italic font-serif">"{testimonial.text}"</p>
+                  <div>
+                    <p className="text-white font-medium">{testimonial.name}</p>
+                    <p className="text-white/30 text-sm">{testimonial.location}</p>
                   </div>
                 </div>
-              </FadeIn>
+              </FadeInSection>
             ))}
           </div>
         </div>
       </section>
 
-      {/* NEWSLETTER */}
-      <section className="py-20 px-6 border-t border-white/[0.06]">
-        <div className="max-w-2xl mx-auto text-center">
-          <FadeIn>
-            <p className="text-gold text-xs tracking-[4px] uppercase mb-4">Newsletter</p>
-            <h3 className="text-white text-2xl font-bold mb-4">Tips exclusivos en tu bandeja</h3>
-            <p className="text-white/40 mb-8">Un email por semana. Sin spam, solo valor real para viajeros.</p>
-            <Link to="/contacto" className="inline-block border border-white/20 text-white px-8 py-3 text-sm tracking-widest uppercase hover:bg-white hover:text-navy transition-all duration-300">
-              Suscribirme
-            </Link>
-          </FadeIn>
+      {/* ═══════════════════════════════════════════════════════════════
+          FINAL CTA
+      ═══════════════════════════════════════════════════════════════ */}
+      <section className="py-24 px-6 border-t border-white/[0.05]">
+        <div className="max-w-4xl mx-auto text-center">
+          <FadeInSection>
+            <h2 className="font-serif text-white text-3xl md:text-4xl mb-6">
+              ¿Listo para tu próxima
+              <span className="italic text-gold"> aventura</span>?
+            </h2>
+            <p className="text-white/40 mb-10">Escríbenos y diseñemos juntos el viaje de tus sueños.</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a 
+                href="https://wa.me/524424530648"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gold text-[#0a0a0a] px-12 py-4 text-[11px] tracking-[3px] uppercase font-semibold hover:bg-white transition-colors duration-500"
+              >
+                WhatsApp
+              </a>
+              <Link
+                to="/contacto"
+                className="border border-white/20 text-white px-12 py-4 text-[11px] tracking-[3px] uppercase hover:bg-white hover:text-[#0a0a0a] transition-all duration-500"
+              >
+                Contacto
+              </Link>
+            </div>
+          </FadeInSection>
         </div>
       </section>
     </div>

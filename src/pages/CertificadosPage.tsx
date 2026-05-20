@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { useAuth } from '../lib/AuthContext';
 
 const CertificadosPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const { user, profile } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,7 +24,6 @@ const CertificadosPage: React.FC = () => {
     const msg = `Hola! Me interesa un certificado de viaje a ${formData.get('destination')}. Soy ${formData.get('name')}.`;
     window.open(`https://wa.me/524424530648?text=${encodeURIComponent(msg)}`, '_blank');
     
-    setSuccess(true);
     setIsSubmitting(false);
     e.currentTarget.reset();
   };

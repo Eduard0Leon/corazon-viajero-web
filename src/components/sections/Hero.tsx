@@ -15,15 +15,6 @@ const Hero: React.FC = () => {
     window.open(`https://wa.me/524424530648?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 40 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: { delay: i * 0.15, duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }
-    })
-  };
-
   return (
     <section className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -41,20 +32,18 @@ const Hero: React.FC = () => {
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
         <motion.span
-          custom={0}
-          initial="hidden"
-          animate="visible"
-          variants={fadeInUp}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           className="inline-block text-gold text-xs tracking-[4px] uppercase font-medium mb-6"
         >
           Agencia de Viajes 100% Online
         </motion.span>
 
         <motion.h1
-          custom={1}
-          initial="hidden"
-          animate="visible"
-          variants={fadeInUp}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.35 }}
           className="text-[clamp(36px,7vw,72px)] font-bold text-white leading-[1.05] mb-6"
         >
           Entre más viajas,
@@ -63,10 +52,9 @@ const Hero: React.FC = () => {
         </motion.h1>
 
         <motion.p
-          custom={2}
-          initial="hidden"
-          animate="visible"
-          variants={fadeInUp}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.5 }}
           className="text-white/70 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
         >
           Descubre destinos extraordinarios con precios que no encontrarás en ningún otro lugar. 
@@ -74,10 +62,9 @@ const Hero: React.FC = () => {
         </motion.p>
 
         <motion.div
-          custom={3}
-          initial="hidden"
-          animate="visible"
-          variants={fadeInUp}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.65 }}
           className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
         >
           <a 
