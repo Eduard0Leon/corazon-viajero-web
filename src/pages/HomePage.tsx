@@ -1,116 +1,308 @@
-import React from 'react';
-import Hero from '../components/sections/Hero';
-import Services from '../components/sections/Services';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
-const Stars = ({ rating }: { rating: number }) => (
-  <div className="flex gap-0.5">
-    {[1,2,3,4,5].map(i => (
-      <span key={i} className={`text-sm ${i <= rating ? 'text-gold' : 'text-gray-300'}`}>★</span>
-    ))}
-  </div>
-);
-
-const DestinationCard = ({ image, title, subtitle, nights, price, rating, reviews, link }: any) => (
-  <div className="group bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
-    <div className="relative h-56 overflow-hidden">
-      <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 p-4">
-        <h3 className="text-xl font-bold text-white">{title}</h3>
-        <p className="text-white/70 text-sm">{subtitle}</p>
-      </div>
-      <div className="absolute top-3 right-3 bg-gold text-navy text-xs font-bold px-2 py-1 rounded-full">{nights}</div>
-    </div>
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-3">
-        <div className="flex items-center gap-2">
-          <Stars rating={rating} />
-          <span className="text-xs text-gray-500">({reviews})</span>
-        </div>
-        <div className="text-lg font-bold text-teal">{price}</div>
-      </div>
-      <a href={link} className="block text-center bg-navy text-white py-2.5 rounded-lg font-medium hover:bg-teal transition-colors duration-300">
-        Ver oferta
-      </a>
-    </div>
-  </div>
-);
-
-const TestimonialCard = ({ image, name, text, rating }: any) => (
-  <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
-    <div className="flex items-center gap-4 mb-4">
-      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-teal to-navy flex items-center justify-center text-white font-bold text-lg">
-        {name[0]}
-      </div>
-      <div>
-        <h4 className="font-semibold text-navy">{name}</h4>
-        <Stars rating={rating} />
-      </div>
-    </div>
-    <p className="text-gray-600 leading-relaxed">"{text}"</p>
-  </div>
+const FadeIn = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-100px" }}
+    transition={{ duration: 0.8, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+  >
+    {children}
+  </motion.div>
 );
 
 const HomePage: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: containerRef });
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.15], [1, 1.1]);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const destino = formData.get('destino') as string || '';
+    const fechas = formData.get('fechas') as string || '';
+    const viajeros = formData.get('viajeros') as string || '1';
+    const msg = `¡Hola! Me interesa viajar a ${destino || '(por definir)'}.\n• Fechas: ${fechas || 'Flexibles'}\n• Viajeros: ${viajeros}\n¿Podrían ayudarme con opciones?`;
+    window.open(`https://wa.me/524424530648?text=${encodeURIComponent(msg)}`, '_blank');
+  };
+
   const destinations = [
-    { image: "/images/orlando.jpg", title: "Orlando, Florida", subtitle: "Parques temáticos y diversión", nights: "4N/5D", price: "Desde $599", rating: 5, reviews: 120, link: "/certificados" },
-    { image: "/images/miami.jpg", title: "Miami, Florida", subtitle: "Playas, sol y vida nocturna", nights: "3N/4D", price: "Desde $499", rating: 4, reviews: 85, link: "/certificados" },
-    { image: "/images/cancun.jpg", title: "Cancún, México", subtitle: "Playas paradisíacas", nights: "5N/6D", price: "Desde $699", rating: 5, reviews: 150, link: "/servicios" },
+    { image: "/images/orlando.jpg", title: "Orlando", subtitle: "Magia sin límites", desc: "Parques temáticos, compras y diversión para toda la familia con precios exclusivos para miembros." },
+    { image: "/images/miami.jpg", title: "Miami", subtitle: "Sol y estilo", desc: "Playas paradisíacas, vida nocturna vibrante y gastronomía que te sorprenderá." },
+    { image: "/images/cancun.jpg", title: "Cancún", subtitle: "Paraíso caribeño", desc: "Aguas turquesas, resorts de lujo y una cultura milenaria por descubrir." },
   ];
 
-  const testimonials = [
-    { name: "María Rodríguez", text: "Una experiencia increíble en Orlando con nuestros hijos. La atención fue excelente y todo salió según lo planeado.", rating: 5 },
-    { name: "Carlos Mendoza", text: "Las playas de Miami son espectaculares. El ahorro fue significativo y el servicio fue excelente de principio a fin.", rating: 4 },
-    { name: "Ana Sánchez", text: "La asesoría para obtener mi visa fue impecable. Me guiaron en todo el proceso. Recomiendo ampliamente.", rating: 5 },
+  const experiences = [
+    { icon: "✈️", title: "Vuelos", desc: "Hasta 40% de descuento en rutas seleccionadas" },
+    { icon: "🏨", title: "Hoteles", desc: "Acceso a tarifas corporativas y membresías" },
+    { icon: "🚢", title: "Cruceros", desc: "Cabinas con upgrades gratuitos" },
+    { icon: "🎢", title: "Parques", desc: "Entradas VIP sin filas" },
   ];
 
   return (
-    <div>
-      <Hero />
-      <Services />
-      
-      {/* Destinations */}
-      <section className="py-20 bg-cream">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <span className="inline-block text-teal text-sm font-semibold tracking-wider uppercase mb-2">Explora</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">Destinos Destacados</h2>
-            <p className="text-gray-600 max-w-xl mx-auto">Los mejores destinos con ofertas exclusivas para tu próxima aventura.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {destinations.map((d, i) => <DestinationCard key={i} {...d} />)}
+    <div ref={containerRef} className="bg-[#0a0a0a]">
+      {/* HERO - Full screen immersive */}
+      <motion.section 
+        style={{ opacity: heroOpacity }}
+        className="relative h-[100dvh] flex items-center justify-center overflow-hidden"
+      >
+        <motion.div 
+          style={{ scale: heroScale }}
+          className="absolute inset-0"
+        >
+          <img 
+            src="/images/hero-travel.jpg" 
+            alt="Viaje"
+            className="w-full h-full object-cover"
+            onError={(e) => { (e.target as HTMLImageElement).src = '/images/blog-hero.jpg'; }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/80" />
+        </motion.div>
+
+        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-gold text-xs tracking-[6px] uppercase font-light mb-8"
+          >
+            Agencia de Viajes 100% Online
+          </motion.p>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.4 }}
+            className="text-white text-[clamp(40px,10vw,90px)] font-bold leading-[0.95] mb-8"
+          >
+            Entre más viajas,
+            <br />
+            <span className="text-gold italic font-light">más vives</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="text-white/60 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed font-light"
+          >
+            Descubre destinos extraordinarios con precios exclusivos. 
+            Únete a nuestra comunidad de viajeros y transforma cada viaje en una experiencia inolvidable.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+          >
+            <a 
+              href="https://wa.me/524424530648"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gold text-navy px-10 py-4 text-sm tracking-widest uppercase font-semibold hover:bg-white transition-colors duration-300"
+            >
+              Cotizar mi viaje
+            </a>
+            <button 
+              onClick={() => setSearchOpen(!searchOpen)}
+              className="border border-white/30 text-white px-10 py-4 text-sm tracking-widest uppercase hover:bg-white/10 transition-colors duration-300"
+            >
+              {searchOpen ? 'Cerrar' : 'Buscar destino'}
+            </button>
+          </motion.div>
+
+          {/* Search Box */}
+          <motion.div
+            initial={false}
+            animate={{ height: searchOpen ? 'auto' : 0, opacity: searchOpen ? 1 : 0 }}
+            transition={{ duration: 0.4 }}
+            className="overflow-hidden mt-8"
+          >
+            <form onSubmit={handleSearch} className="bg-white/5 backdrop-blur-md border border-white/10 p-6 max-w-2xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="text-left">
+                  <label className="text-white/40 text-[10px] uppercase tracking-widest mb-2 block">Destino</label>
+                  <input name="destino" type="text" placeholder="¿A dónde?" className="w-full bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/20 focus:outline-none focus:border-gold transition-colors" />
+                </div>
+                <div className="text-left">
+                  <label className="text-white/40 text-[10px] uppercase tracking-widest mb-2 block">Fechas</label>
+                  <input name="fechas" type="text" placeholder="¿Cuándo?" className="w-full bg-transparent border-b border-white/20 pb-2 text-white placeholder:text-white/20 focus:outline-none focus:border-gold transition-colors" />
+                </div>
+                <div className="text-left">
+                  <label className="text-white/40 text-[10px] uppercase tracking-widest mb-2 block">Viajeros</label>
+                  <select name="viajeros" className="w-full bg-transparent border-b border-white/20 pb-2 text-white focus:outline-none focus:border-gold transition-colors">
+                    <option value="1" className="bg-navy">1 Adulto</option>
+                    <option value="2" className="bg-navy">2 Adultos</option>
+                    <option value="3" className="bg-navy">3+ Adultos</option>
+                    <option value="Familia" className="bg-navy">Familia</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" className="w-full mt-6 bg-teal text-white py-3 text-sm uppercase tracking-widest hover:bg-teal-dark transition-colors">
+                Buscar
+              </button>
+            </form>
+          </motion.div>
+        </div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2"
+        >
+          <div className="w-[1px] h-16 bg-gradient-to-b from-transparent via-white/40 to-transparent" />
+        </motion.div>
+      </motion.section>
+
+      {/* DESTINATIONS - Editorial style */}
+      <section className="py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <FadeIn>
+            <div className="flex items-end justify-between mb-16">
+              <div>
+                <p className="text-gold text-xs tracking-[4px] uppercase mb-4">Destinos</p>
+                <h2 className="text-white text-4xl md:text-5xl font-bold">Lugares que te
+                  <br />
+                  <span className="text-gold italic font-light">harán soñar</span>
+                </h2>
+              </div>
+              <Link to="/servicios" className="hidden md:block text-white/50 text-sm hover:text-gold transition-colors border-b border-white/20 pb-1 hover:border-gold">
+                Ver todos los destinos →
+              </Link>
+            </div>
+          </FadeIn>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {destinations.map((dest, i) => (
+              <FadeIn key={i} delay={i * 0.15}>
+                <div className="group cursor-pointer">
+                  <div className="relative h-[500px] overflow-hidden mb-6">
+                    <img 
+                      src={dest.image} 
+                      alt={dest.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      onError={(e) => { (e.target as HTMLImageElement).src = '/images/blog-hero.jpg'; }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                    <div className="absolute bottom-0 left-0 p-8">
+                      <p className="text-gold text-xs tracking-[3px] uppercase mb-2">{dest.subtitle}</p>
+                      <h3 className="text-white text-3xl font-bold">{dest.title}</h3>
+                    </div>
+                  </div>
+                  <p className="text-white/50 text-sm leading-relaxed">{dest.desc}</p>
+                </div>
+              </FadeIn>
+            ))}
           </div>
         </div>
       </section>
-      
-      {/* Testimonials */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <span className="inline-block text-teal text-sm font-semibold tracking-wider uppercase mb-2">Testimonios</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">Lo que dicen nuestros clientes</h2>
-            <p className="text-gray-600 max-w-xl mx-auto">Miles de viajeros confían en nosotros para sus vacaciones.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {testimonials.map((t, i) => <TestimonialCard key={i} {...t} />)}
+
+      {/* EXPERIENCES - Dark cards */}
+      <section className="py-32 px-6 bg-[#0f0f0f]">
+        <div className="max-w-7xl mx-auto">
+          <FadeIn>
+            <div className="text-center mb-20">
+              <p className="text-gold text-xs tracking-[4px] uppercase mb-4">Experiencias</p>
+              <h2 className="text-white text-4xl md:text-5xl font-bold">Todo lo que necesitas
+                <br />
+                <span className="text-gold italic font-light">en un solo lugar</span>
+              </h2>
+            </div>
+          </FadeIn>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {experiences.map((exp, i) => (
+              <FadeIn key={i} delay={i * 0.1}>
+                <div className="bg-white/[0.03] border border-white/[0.06] p-8 hover:bg-white/[0.06] hover:border-gold/30 transition-all duration-500 group">
+                  <div className="text-4xl mb-6">{exp.icon}</div>
+                  <h3 className="text-white text-xl font-semibold mb-3">{exp.title}</h3>
+                  <p className="text-white/40 text-sm leading-relaxed">{exp.desc}</p>
+                </div>
+              </FadeIn>
+            ))}
           </div>
         </div>
       </section>
-      
-      {/* CTA */}
-      <section className="py-20 bg-gradient-to-br from-navy via-navy-light to-navy">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">¿Listo para tu próxima aventura?</h2>
-          <p className="text-white/70 text-lg mb-8 max-w-2xl mx-auto">Contáctanos hoy y comienza a planificar tu viaje con descuentos increíbles.</p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="/contacto" className="bg-white text-navy hover:bg-cream px-8 py-3 rounded-lg font-semibold transition-colors">
-              Contactar ahora
-            </a>
-            <a href="https://wa.me/524424530648" target="_blank" rel="noopener noreferrer" className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
-              WhatsApp
-            </a>
+
+      {/* MEMBERSHIP CTA */}
+      <section className="py-32 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy-light to-navy" />
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <FadeIn>
+            <p className="text-gold text-xs tracking-[4px] uppercase mb-6">Membresía</p>
+            <h2 className="text-white text-4xl md:text-6xl font-bold mb-8 leading-tight">
+              Únete a la comunidad
+              <br />
+              <span className="text-gold italic font-light">de viajeros inteligentes</span>
+            </h2>
+            <p className="text-white/50 text-lg mb-12 max-w-2xl mx-auto leading-relaxed">
+              Ahorra hasta $500 USD por viaje. Acceso exclusivo a tarifas, comunidad privada y un asistente personal 
+              que planea todo por ti.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/descuentos" className="bg-gold text-navy px-10 py-4 text-sm tracking-widest uppercase font-semibold hover:bg-white transition-colors">
+                Conocer membresía
+              </Link>
+              <a href="https://wa.me/524424530648" target="_blank" rel="noopener noreferrer" className="border border-white/30 text-white px-10 py-4 text-sm tracking-widest uppercase hover:bg-white/10 transition-colors">
+                Hablar con un asesor
+              </a>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <FadeIn>
+            <div className="text-center mb-20">
+              <p className="text-gold text-xs tracking-[4px] uppercase mb-4">Testimonios</p>
+              <h2 className="text-white text-4xl md:text-5xl font-bold">Lo que dicen
+                <br />
+                <span className="text-gold italic font-light">nuestros viajeros</span>
+              </h2>
+            </div>
+          </FadeIn>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { name: "María R.", text: "Nunca pensé que podría ahorrar tanto. La membresía se pagó sola en mi primer viaje a Orlando." },
+              { name: "Carlos M.", text: "El servicio personalizado es increíble. Mi asesor encontró opciones que ni sabía que existían." },
+              { name: "Ana S.", text: "Desde que soy miembro, mis vacaciones son otra cosa. Mejor calidad, menos precio." },
+            ].map((t, i) => (
+              <FadeIn key={i} delay={i * 0.15}>
+                <div className="border border-white/[0.08] p-8 hover:border-gold/30 transition-colors duration-500">
+                  <p className="text-white/60 text-lg leading-relaxed mb-8 italic">"{t.text}"</p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-teal to-navy flex items-center justify-center text-white font-bold">
+                      {t.name[0]}
+                    </div>
+                    <p className="text-white font-medium">{t.name}</p>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* NEWSLETTER */}
+      <section className="py-20 px-6 border-t border-white/[0.06]">
+        <div className="max-w-2xl mx-auto text-center">
+          <FadeIn>
+            <p className="text-gold text-xs tracking-[4px] uppercase mb-4">Newsletter</p>
+            <h3 className="text-white text-2xl font-bold mb-4">Tips exclusivos en tu bandeja</h3>
+            <p className="text-white/40 mb-8">Un email por semana. Sin spam, solo valor real para viajeros.</p>
+            <Link to="/contacto" className="inline-block border border-white/20 text-white px-8 py-3 text-sm tracking-widest uppercase hover:bg-white hover:text-navy transition-all duration-300">
+              Suscribirme
+            </Link>
+          </FadeIn>
         </div>
       </section>
     </div>
