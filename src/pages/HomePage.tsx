@@ -62,6 +62,8 @@ const destinationPanels = [
   {
     image:
       'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80',
+    video:
+      'https://player.vimeo.com/external/434045526.sd.mp4?s=6cd7df8d8bbd76bdf4b573a6a1d5dd68c4fa6c15&profile_id=139&oauth2_token_id=57447761',
     title: 'Maldivas',
     subtitle: 'Azul infinito y calma absoluta',
     desc:
@@ -70,6 +72,8 @@ const destinationPanels = [
   {
     image:
       'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=1200&q=80',
+    video:
+      'https://player.vimeo.com/external/517374440.sd.mp4?s=8e3e2f202be8bd7e8fc0f4bc0df2a72e2d0b1a62&profile_id=139&oauth2_token_id=57447761',
     title: 'Cancún',
     subtitle: 'Caribe con acceso inteligente',
     desc:
@@ -78,6 +82,8 @@ const destinationPanels = [
   {
     image:
       'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1200&q=80',
+    video:
+      'https://player.vimeo.com/external/370467553.sd.mp4?s=63dca3a6f3ce02b0b7d810e16a3a836b6b5480a1&profile_id=139&oauth2_token_id=57447761',
     title: 'Santorini',
     subtitle: 'Postales que sí existen',
     desc:
@@ -272,16 +278,40 @@ const HomePage: React.FC = () => {
           <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
             <div className="relative overflow-hidden rounded-[28px] bg-[#0d2a31] shadow-[0_25px_60px_rgba(5,31,35,0.18)]">
               <AnimatePresence mode="wait">
-                <motion.img
+                <motion.div
                   key={activeDestination}
-                  src={destinationPanels[activeDestination].image}
-                  alt={destinationPanels[activeDestination].title}
                   initial={{ opacity: 0, scale: 1.05 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.7 }}
-                  className="h-[560px] w-full object-cover"
-                />
+                  className="relative h-[560px] w-full"
+                >
+                  <motion.video
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    poster={destinationPanels[activeDestination].image}
+                    className="h-full w-full object-cover"
+                    initial={{ scale: 1.02 }}
+                    animate={{ scale: 1.08 }}
+                    transition={{ duration: 10, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+                  >
+                    <source src={destinationPanels[activeDestination].video} type="video/mp4" />
+                  </motion.video>
+                  <motion.div
+                    className="absolute inset-0"
+                    initial={{ background: 'linear-gradient(135deg, rgba(13,42,49,0.12) 0%, rgba(43,122,120,0.08) 100%)' }}
+                    animate={{
+                      background: [
+                        'linear-gradient(135deg, rgba(13,42,49,0.18) 0%, rgba(43,122,120,0.10) 100%)',
+                        'linear-gradient(135deg, rgba(11,56,64,0.10) 0%, rgba(121,217,207,0.14) 100%)',
+                        'linear-gradient(135deg, rgba(13,42,49,0.18) 0%, rgba(43,122,120,0.10) 100%)',
+                      ],
+                    }}
+                    transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+                  />
+                </motion.div>
               </AnimatePresence>
               <div className="absolute inset-0 bg-gradient-to-t from-[#0d2a31]/88 via-[#0d2a31]/18 to-transparent" />
               <div className="absolute bottom-0 left-0 max-w-2xl p-8 md:p-12">
@@ -319,11 +349,19 @@ const HomePage: React.FC = () => {
                   }`}
                 >
                   <div className="mb-4 overflow-hidden rounded-[16px]">
-                    <img
-                      src={destination.image}
-                      alt={destination.title}
-                      className="h-28 w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+                    <div className="relative h-28 w-full overflow-hidden">
+                      <video
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        poster={destination.image}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      >
+                        <source src={destination.video} type="video/mp4" />
+                      </video>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0d2a31]/35 to-transparent" />
+                    </div>
                   </div>
                   <p className="font-serif text-2xl text-[#0d2a31]">{destination.title}</p>
                   <p className="mt-2 text-sm leading-6 text-[#0d2a31]/58">
